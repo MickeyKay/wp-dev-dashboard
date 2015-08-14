@@ -1,0 +1,18 @@
+/**
+ * All of the CSS for your dashboard-specific functionality should be
+ * included in this file.
+ */
+
+#wp-dev-dashboard-settings .nav-tab-wrapper .dashicons {
+	position: relative;
+	bottom: -0.1em;
+	font-size: 1.3em;
+}
+
+#wp-dev-dashboard-settings .button + .button {
+	margin-left: 0.75em;
+}
+
+#wp-dev-dashboard-settings .spinner {
+	float: none;
+}

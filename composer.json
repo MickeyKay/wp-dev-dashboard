@@ -1,0 +1,5 @@
+{
+    "require": {
+    	"sunra/php-simple-html-dom-parser": "v1.5.0",
+    }
+}

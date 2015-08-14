@@ -1,0 +1,100 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "284eb34de7a1e20b2d83f330bf3f3c68",
+    "packages": [
+        {
+            "name": "markjaquith/wp-tlc-transients",
+            "version": "1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/markjaquith/WP-TLC-Transients.git",
+                "reference": "bdbe0691db6adaf08af0dee6c70ebebe881633d8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/markjaquith/WP-TLC-Transients/zipball/bdbe0691db6adaf08af0dee6c70ebebe881633d8",
+                "reference": "bdbe0691db6adaf08af0dee6c70ebebe881633d8",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "class-tlc-transient.php",
+                    "class-tlc-transient-update-server.php"
+                ],
+                "files": [
+                    "functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Mark Jaquith",
+                    "homepage": "http://markjaquith.com/"
+                }
+            ],
+            "description": "A WP transients interface with support for soft-expiration, background updating of the transients.",
+            "homepage": "https://github.com/markjaquith/WP-TLC-Transients",
+            "keywords": [
+                "cache",
+                "wordpress"
+            ],
+            "time": "2013-05-07 18:12:10"
+        },
+        {
+            "name": "sunra/php-simple-html-dom-parser",
+            "version": "v1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sunra/php-simple-html-dom-parser.git",
+                "reference": "a0b80ace086c7e09085669205e1b3c2c9c7a453c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sunra/php-simple-html-dom-parser/zipball/a0b80ace086c7e09085669205e1b3c2c9c7a453c",
+                "reference": "a0b80ace086c7e09085669205e1b3c2c9c7a453c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Sunra\\PhpSimple\\HtmlDomParser": "Src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sunra",
+                    "email": "sunra@yandex.ru",
+                    "homepage": "http://github.com/sunra"
+                }
+            ],
+            "description": "Composer adaptation of: A HTML DOM parser written in PHP5+ let you manipulate HTML in a very easy way! Require PHP 5+. Supports invalid HTML. Find tags on an HTML page with selectors just like jQuery. Extract contents from HTML in a single line.",
+            "homepage": "https://github.com/sunra/php-simple-html-dom-parser",
+            "keywords": [
+                "dom",
+                "html",
+                "parser"
+            ],
+            "time": "2013-05-04 14:32:03"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "platform": [],
+    "platform-dev": []
+}

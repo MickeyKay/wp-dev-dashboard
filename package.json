@@ -1,0 +1,22 @@
+{
+  "title": "WP Dev Dashboard",
+  "description": "Quickly see all of your unresolved plugin support requests.",
+  "version": "1.0.0",
+  "homepage": "http://wordpress.org/plugins/wp-dev-dashboard",
+  "author": {
+    "name": "Mickey Kay Creative",
+    "email": "mickey@mickeykaycreative.com",
+    "url": "http://mickeykaycreative.com"
+  },
+  "devDependencies": {
+    "grunt": "latest",
+    "load-grunt-tasks": "latest",
+    "grunt-dev-update": "latest",
+    "grunt-prompt": "latest",
+    "grunt-text-replace": "latest",
+    "grunt-wp-readme-to-markdown": "latest",
+    "grunt-wp-i18n": "latest",
+    "grunt-contrib-copy": "^0.7.0"
+  },
+  "keywords": []
+}
