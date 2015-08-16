@@ -16,12 +16,12 @@ Easily view all of your unresolved plugin & theme support tickets.
 
 WP Dev Dashboard allows you to easily view and respond to all of your unresolved plugin & theme support requests. The default wordpress.org support forums can be difficult to parse, particularly if you have authored numerous plugins and/or themes that generate a large number of support requests. This plugin allows you to easily view and respond to your unresolved plugin and theme support requests in a simple, easy-to-use interface.
 
-# Features #
+### Features ###
 * Displays plugin and theme support requests in sortable, collapsible metaboxes for ease of use.
 * Implements caching to reduce load time for plugin and theme support ticket information.
 * Includes cache-busting "refresh" option to force refresh plugin and theme support ticket data.
 
-# Coming soon. . . #
+### Coming soon. . . ###
 WP Dev Dashboard is intended to be the go-to resource for WordPress plugin and theme authors looking for a better management experience. The below list includes additional features for future development, features that are intended to make WordPress developers' lives as easy as possible. If you have an idea for a feature you'd like to see, please submit it via the [support forum](https://wordpress.org/support/plugin/wp-dev-dashboard).
 
 * View all plugin/theme statistics (active installs, current version, downloads, rating, etc).
