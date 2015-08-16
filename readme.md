@@ -1,33 +1,33 @@
-=== WP Dev Dashboard ===
-Contributors:      McGuive7
-Donate link:       http://wordpress.org/plugins/wp-dev-dashboard
-Tags:              dev, dashboard, plugin, theme, unresolved, support, requests, tickets
-Requires at least: 3.5
-Tested up to:      4.3
-Stable tag:        1.0.0
-License:           GPLv2 or later
-License URI:       http://www.gnu.org/licenses/gpl-2.0.html
+# WP Dev Dashboard #
+**Contributors:**      McGuive7  
+**Donate link:**       http://wordpress.org/plugins/wp-dev-dashboard  
+**Tags:**              dev, dashboard, plugin, theme, unresolved, support, requests, tickets  
+**Requires at least:** 3.5  
+**Tested up to:**      4.3  
+**Stable tag:**        1.0.0  
+**License:**           GPLv2 or later  
+**License URI:**       http://www.gnu.org/licenses/gpl-2.0.html  
 
 Easily view all of your unresolved plugin & theme support tickets.
 
-== Description ==
+## Description ##
 
 **Like this plugin? Please consider [leaving a 5-star review](https://wordpress.org/support/view/plugin-reviews/wp-dev-dashboard).**
 
 WP Dev Dashboard allows you to easily view and respond to all of your unresolved plugin & theme support requests. The default wordpress.org support forums can be difficult to parse, particularly if you have authored numerous plugins and/or themes that generate a large number of support requests. This plugin allows you to easily view and respond to your unresolved plugin and theme support requests in a simple, easy-to-use interface.
 
-=== Features ===
+# Features #
 * Displays plugin and theme support requests in sortable, collapsible metaboxes for ease of use.
 * Implements caching to reduce load time for plugin and theme support ticket information.
 * Includes cache-busting "refresh" option to force refresh plugin and theme support ticket data.
 
-=== Coming soon. . . ===
+# Coming soon. . . #
 WP Dev Dashboard is intended to be the go-to resource for WordPress plugin and theme authors looking for a better management experience. The below list includes additional features for future development, features that are intended to make WordPress developers' lives as easy as possible. If you have an idea for a feature you'd like to see, please submit it via the [support forum](https://wordpress.org/support/plugin/wp-dev-dashboard).
 
 * View all plugin/theme statistics (active installs, current version, downloads, rating, etc).
 * Import unresolved Github issues as well as standard wordpress.org forum tickets.
 
-== Installation ==
+## Installation ##
 
 1. Install the plugin.
 2. Navigate to **Dev Dashboard** in the admin menu.
@@ -37,17 +37,19 @@ WP Dev Dashboard is intended to be the go-to resource for WordPress plugin and t
 6. Resolve some support requests!
 
 
-== Screenshots ==
+## Screenshots ##
 
-1. WP Dev Dashboard in action (adding a wordpress.org username and viewing unresolved tickets).
+### 1. WP Dev Dashboard in action (adding a wordpress.org username and viewing unresolved tickets). ###
+![WP Dev Dashboard in action (adding a wordpress.org username and viewing unresolved tickets).]()
 
 
-== Changelog ==
 
-= 1.0.0 =
+## Changelog ##
+
+### 1.0.0 ###
 * First release
 
-== Upgrade Notice ==
+## Upgrade Notice ##
 
-= 1.0.0 =
+### 1.0.0 ###
 First Release

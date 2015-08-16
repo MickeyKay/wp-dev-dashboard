@@ -152,7 +152,7 @@ class WP_Dev_Dashboard_Admin {
 
 		$this->screen_id = add_menu_page(
 			$this->plugin_name, // Page title
-			$this->plugin_name, // Menu title
+			esc_html__( 'Dev Dashboard', 'wp-dev-dashboard' ), // Menu title
 			'manage_options', // Capability
 			$this->plugin_slug, // Page ID
 			array( $this, 'do_settings_page' ), // Callback
@@ -171,7 +171,7 @@ class WP_Dev_Dashboard_Admin {
 		// Set up tab/settings.
 		$tab_base_url = "?page={$this->plugin_slug}";
 		$active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'plugins';
-		$is_secondary_tab = ( 'plugins' == $active_tab || 'themes' == $active_tab );
+		$is_secondary_tab = ( 'plugins' == $active_tab || 'themes' == $active_tab ) && ( ! empty( $this->options['username'] ) );
 
 		// Check force refresh param passed via Ajax.
 		$force_refresh = isset( $_POST['force_refresh'] ) ? true : false;
@@ -187,26 +187,26 @@ class WP_Dev_Dashboard_Admin {
 	        	<?php endif; ?>
 	        	<a href="<?php echo $tab_base_url; ?>&tab=settings" class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-generic"></span> <?php echo __( 'Settings', 'wp-dev-dashboard '); ?></a>
 	        </h2>
-			<div id="poststuff" data-wpu-tab="<?php echo $active_tab; ?>">
+			<div id="poststuff" data-wpdd-tab="<?php echo $active_tab; ?>">
 				<form action='options.php' method='post'>
 					<?php
 
 					// Set up settings fields.
 					settings_fields( $this->plugin_slug );
 
-					if ( $is_secondary_tab && ! empty( $this->options['username'] ) ) {
+					if ( $is_secondary_tab ) {
 						$this->do_meta_boxes( $active_tab );
 						$this->output_settings_fields( true );
 					} else {
 						$this->output_settings_fields();
+						submit_button( '', 'primary', '', false );
 					}
-					submit_button( '', 'primary', '', false );
 
 					// Output refresh button.
 					if ( $is_secondary_tab ) {
 						$atts = array(
 							'href'  => '',
-							'data-wpu-refreshing-text' => esc_attr__( 'Fetching data&hellip;', 'wp-dev-dashboard' ),
+							'data-wpdd-refreshing-text' => esc_attr__( 'Fetching data, this can take a bit&hellip;', 'wp-dev-dashboard' ),
 						);
 
 						submit_button( esc_attr__( 'Refresh List', 'wp-dev-dashboard' ), 'button button-refresh', '', false, $atts );
@@ -546,7 +546,7 @@ class WP_Dev_Dashboard_Admin {
 	public function print_metabox_trigger_scripts() {
 		?>
 		<script>
-			jQuery( document ).on( 'ready ajaxComplete', function(){
+			jQuery( document ).on( 'ready wpddRefreshAfter', function(){
 				postboxes.add_postbox_toggles( '<?php echo $this->plugin_slug; ?>' );
 			});
 		</script>

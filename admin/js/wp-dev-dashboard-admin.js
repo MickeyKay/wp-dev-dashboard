@@ -4,6 +4,9 @@
 	$( '.button-refresh' ).on( 'click', function( e ) {
 		e.preventDefault();
 
+		// Trigger event before refresh.
+		$( document ).trigger( 'wpddRefreshBefore' );
+
 		var activeTab,
 			$button,
 			buttonOrigText,
@@ -13,10 +16,10 @@
 			data;
 
 		// Set up all variables and objects.
-		activeTab = $( '#poststuff' ).attr( 'data-wpu-tab' );
+		activeTab = $( '#poststuff' ).attr( 'data-wpdd-tab' );
 		$button = $( this );
 		buttonOrigText = $button.val();
-		buttonRefreshingText = $button.attr( 'data-wpu-refreshing-text' );
+		buttonRefreshingText = $button.attr( 'data-wpdd-refreshing-text' );
 		$metaboxContainer = $( '.wp-dev-dashboard-metaboxes' ).fadeTo( 'fast', 0.4 );
 
 		$button.val( buttonRefreshingText ).prop( 'disabled', true );
@@ -33,6 +36,9 @@
 			$metaboxContainer.fadeTo( 'slow', 1 ).html( response );
 			$button.val( buttonOrigText ).prop( 'disabled', false );
 			$spinner.toggleClass( 'is-active');
+
+			// Trigger event after refresh.
+			$( document ).trigger( 'wpddRefreshAfter' );
 		});
 
 	});
