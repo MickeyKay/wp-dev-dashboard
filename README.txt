@@ -39,7 +39,7 @@ WP Dev Dashboard is intended to be the go-to resource for WordPress plugin and t
 
 == Screenshots ==
 
-1. WP Dev Dashboard in action (adding a wordpress.org username and viewing unresolved tickets).
+1. The easy-to-use WP Dev Dashboard.
 
 
 == Changelog ==
