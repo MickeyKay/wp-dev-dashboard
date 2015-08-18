@@ -486,27 +486,27 @@ class WP_Dev_Dashboard_Admin {
 
 			$tickets_data = $plugin_theme->tickets_data;
 
-			// Compose title of meta box.
-			$total_count = count( $tickets_data );
+			// Get count of unresolved tickets.
+			$resolved_count = $unresolved_count = 0;
+			foreach ( $tickets_data as $ticket_data ) {
 
-			if ( ! empty( $this->options['show_all_tickets'] ) ) {
-
-				$unresolved_count = 0;
-				foreach ( $tickets_data as $ticket_data ) {
-
-					if ( 'unresolved' == $ticket_data['status'] ) {
-						$unresolved_count++;
-					}
-
+				if ( 'unresolved' == $ticket_data['status'] ) {
+					$unresolved_count++;
+				} else {
+					$resolved_count++;
 				}
 
-				$ticket_html = "<span class='wpdd-unresolved-count'>{$unresolved_count}</span>/{$total_count}";
-
-			} else {
-				$ticket_html = "{$total_count}";
 			}
 
-			$title = "{$plugin_theme->name} ({$ticket_html})";
+			// Generate icon/count for unresolved tickets.
+			$ticket_html = sprintf( '<span class="dashicons dashicons-editor-help wpdd-unresolved" title="%s"></span> %d', __( 'Unresolved', 'wp-dev-dashboard' ), $unresolved_count );
+
+			// Generate icon/count for resolved tickets if need be.
+			if ( ! empty( $this->options['show_all_tickets'] ) ) {
+				$ticket_html .= sprintf( ' <span class="dashicons dashicons-yes wpdd-resolved" title="%s"></span> %d', __( 'Resolved', 'wp-dev-dashboard' ), $resolved_count );
+			}
+
+			$title = "{$plugin_theme->name} <span class='wpdd-ticket-count'>{$ticket_html}</span>";
 
 			add_meta_box(
 				"{$plugin_theme->slug}",

@@ -51,6 +51,7 @@ WP Dev Dashboard is intended to be the go-to resource for WordPress plugin and t
 ### 1.1.0 ###
 * Add ability to show all support tickets (both resolved and unresolved).
 * Add ability to manually add plugin & theme slugs to view in addition to those by a certain user.
+* Improve metabox count indicator for resolved and unresolved tickets.
 
 ### 1.0.0 ###
 * First release
@@ -60,6 +61,7 @@ WP Dev Dashboard is intended to be the go-to resource for WordPress plugin and t
 ### 1.1.0 ###
 * Add ability to show all support tickets (both resolved and unresolved).
 * Add ability to manually add plugin & theme slugs to view in addition to those by a certain user.
+* Improve metabox count indicator for resolved and unresolved tickets.
 
 ### 1.0.0 ###
 First Release

@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: WP Dev Dashboard 1.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-dev-dashboard\n"
-"POT-Creation-Date: 2015-08-18 03:27:49+00:00\n"
+"POT-Creation-Date: 2015-08-18 04:49:31+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -15,91 +15,127 @@ msgstr ""
 
 #: admin/class-wp-dev-dashboard-admin.php:155
 #: svn/tags/1.0.0/admin/class-wp-dev-dashboard-admin.php:155
+#: svn/tags/1.1.0/admin/class-wp-dev-dashboard-admin.php:155
 #: svn/trunk/admin/class-wp-dev-dashboard-admin.php:155
 msgid "Dev Dashboard"
 msgstr ""
 
 #: admin/class-wp-dev-dashboard-admin.php:183
 #: svn/tags/1.0.0/admin/class-wp-dev-dashboard-admin.php:209
-#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:209
+#: svn/tags/1.1.0/admin/class-wp-dev-dashboard-admin.php:183
+#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:183
 msgid "Fetching data, this can take a bit&hellip;"
 msgstr ""
 
 #: admin/class-wp-dev-dashboard-admin.php:192
 #: svn/tags/1.0.0/admin/class-wp-dev-dashboard-admin.php:185
-#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:185
+#: svn/tags/1.1.0/admin/class-wp-dev-dashboard-admin.php:192
+#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:192
 msgid "Plugins"
 msgstr ""
 
 #: admin/class-wp-dev-dashboard-admin.php:193
 #: svn/tags/1.0.0/admin/class-wp-dev-dashboard-admin.php:186
-#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:186
+#: svn/tags/1.1.0/admin/class-wp-dev-dashboard-admin.php:193
+#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:193
 msgid "Themes"
 msgstr ""
 
 #: admin/class-wp-dev-dashboard-admin.php:195
 #: svn/tags/1.0.0/admin/class-wp-dev-dashboard-admin.php:188
-#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:188
+#: svn/tags/1.1.0/admin/class-wp-dev-dashboard-admin.php:195
+#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:195
 msgid "Settings"
 msgstr ""
 
 #: admin/class-wp-dev-dashboard-admin.php:208
 #: admin/class-wp-dev-dashboard-admin.php:221
 #: svn/tags/1.0.0/admin/class-wp-dev-dashboard-admin.php:212
-#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:212
+#: svn/tags/1.1.0/admin/class-wp-dev-dashboard-admin.php:208
+#: svn/tags/1.1.0/admin/class-wp-dev-dashboard-admin.php:221
+#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:208
+#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:221
 msgid "Refresh List"
 msgstr ""
 
 #: admin/class-wp-dev-dashboard-admin.php:254
+#: svn/tags/1.1.0/admin/class-wp-dev-dashboard-admin.php:254
+#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:254
 msgid "WordPress.org username"
 msgstr ""
 
 #: admin/class-wp-dev-dashboard-admin.php:265
 #: admin/class-wp-dev-dashboard-admin.php:277
+#: svn/tags/1.1.0/admin/class-wp-dev-dashboard-admin.php:265
+#: svn/tags/1.1.0/admin/class-wp-dev-dashboard-admin.php:277
+#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:265
+#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:277
 msgid "Additional plugins"
 msgstr ""
 
 #: admin/class-wp-dev-dashboard-admin.php:271
+#: svn/tags/1.1.0/admin/class-wp-dev-dashboard-admin.php:271
+#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:271
 msgid "Comma-separated list of slugs for additional plugins to include."
 msgstr ""
 
 #: admin/class-wp-dev-dashboard-admin.php:283
+#: svn/tags/1.1.0/admin/class-wp-dev-dashboard-admin.php:283
+#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:283
 msgid "Comma-separated list of slugs for additional themes to include."
 msgstr ""
 
 #: admin/class-wp-dev-dashboard-admin.php:289
+#: svn/tags/1.1.0/admin/class-wp-dev-dashboard-admin.php:289
+#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:289
 msgid "Show all tickets"
 msgstr ""
 
 #: admin/class-wp-dev-dashboard-admin.php:295
+#: svn/tags/1.1.0/admin/class-wp-dev-dashboard-admin.php:295
+#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:295
 msgid "(Only unresolved tickets are shown by default.)"
 msgstr ""
 
 #: admin/class-wp-dev-dashboard-admin.php:470
+#: svn/tags/1.1.0/admin/class-wp-dev-dashboard-admin.php:470
+#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:470
 msgid "There are no %s to display."
+msgstr ""
+
+#: admin/class-wp-dev-dashboard-admin.php:502
+msgid "Unresolved"
+msgstr ""
+
+#: admin/class-wp-dev-dashboard-admin.php:506
+msgid "Resolved"
 msgstr ""
 
 #: admin/class-wp-dev-dashboard-admin.php:656
 #: svn/tags/1.0.0/admin/class-wp-dev-dashboard-admin.php:531
-#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:531
+#: svn/tags/1.1.0/admin/class-wp-dev-dashboard-admin.php:656
+#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:656
 msgid "Version"
 msgstr ""
 
 #: admin/class-wp-dev-dashboard-admin.php:657
 #: svn/tags/1.0.0/admin/class-wp-dev-dashboard-admin.php:532
-#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:532
+#: svn/tags/1.1.0/admin/class-wp-dev-dashboard-admin.php:657
+#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:657
 msgid "WP Versions"
 msgstr ""
 
 #: admin/class-wp-dev-dashboard-admin.php:658
 #: svn/tags/1.0.0/admin/class-wp-dev-dashboard-admin.php:533
-#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:533
+#: svn/tags/1.1.0/admin/class-wp-dev-dashboard-admin.php:658
+#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:658
 msgid "Rating"
 msgstr ""
 
 #: admin/class-wp-dev-dashboard-admin.php:920
 #: svn/tags/1.0.0/admin/class-wp-dev-dashboard-admin.php:703
-#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:703
+#: svn/tags/1.1.0/admin/class-wp-dev-dashboard-admin.php:920
+#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:920
 msgid "Attempt to fetch failed"
 msgstr ""
 
@@ -108,17 +144,14 @@ msgid "WP Dev Dashboard"
 msgstr ""
 
 #: svn/tags/1.0.0/admin/class-wp-dev-dashboard-admin.php:245
-#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:245
 msgid "WordPress.org Username"
 msgstr ""
 
 #: svn/tags/1.0.0/admin/class-wp-dev-dashboard-admin.php:364
-#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:364
 msgid "Please enter a WordPress.org username."
 msgstr ""
 
 #: svn/tags/1.0.0/admin/class-wp-dev-dashboard-admin.php:383
-#: svn/trunk/admin/class-wp-dev-dashboard-admin.php:383
 msgid "There are no %s for which this user is a contributor"
 msgstr ""
 
