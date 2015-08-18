@@ -1,7 +1,7 @@
 {
   "title": "WP Dev Dashboard",
   "description": "Quickly see all of your unresolved plugin support requests.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "homepage": "http://wordpress.org/plugins/wp-dev-dashboard",
   "author": {
     "name": "Mickey Kay Creative",

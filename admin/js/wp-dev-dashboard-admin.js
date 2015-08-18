@@ -33,7 +33,7 @@
 
 		// Run Ajax request.
 		jQuery.post( ajaxurl, data, function( response ) {
-			$metaboxContainer.fadeTo( 'slow', 1 ).html( response );
+			$metaboxContainer.fadeTo( 'slow', 1 ).replaceWith( response );
 			$button.val( buttonOrigText ).prop( 'disabled', false );
 			$spinner.toggleClass( 'is-active');
 

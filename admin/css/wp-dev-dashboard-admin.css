@@ -9,6 +9,23 @@
 	font-size: 1.3em;
 }
 
+#wp-dev-dashboard-settings .wp-dev-dashboard-metaboxes {
+	overflow: hidden;
+	margin-top: 1em;
+}
+
+#wp-dev-dashboard-settings .wpdd-unresolved-count {
+	color: #dd3d36;
+}
+
+#wp-dev-dashboard-settings li.wpdd-resolved .dashicons {
+	color: #7ad03a;
+}
+
+#wp-dev-dashboard-settings li.wpdd-unresolved .dashicons {
+	color: #dd3d36;
+}
+
 #wp-dev-dashboard-settings .button + .button {
 	margin-left: 0.75em;
 }

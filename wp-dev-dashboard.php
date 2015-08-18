@@ -16,7 +16,7 @@
  * Plugin Name:       WP Dev Dashboard
  * Plugin URI:        http://wordpress.org/plugins/wp-dev-dashboard
  * Description:       Easily see all of your unresolved plugin & theme support requests.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Author:            Mickey Kay Creative
  * Author URI:        http://mickeykaycreative.com/
  * License:           GPL-2.0+
@@ -25,6 +25,16 @@
  * Domain Path:       /languages
  */
 
+/**
+ * TO DO
+ *
+ * Add refresh button at top of list as well as bottom.
+ * Consider adding list table for sortable plugin/theme view.
+ * Make metabox plugin [count] reflect unresolved and resolved accordingly when switching setting.
+ * Add link to main forum for plugin/theme.
+ * Integrate github issues.
+ *
+ */
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;

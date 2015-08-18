@@ -4,7 +4,7 @@
 **Tags:**              dev, dashboard, plugin, theme, unresolved, support, requests, tickets  
 **Requires at least:** 3.5  
 **Tested up to:**      4.3  
-**Stable tag:**        1.0.0  
+**Stable tag:**        1.1.0  
 **License:**           GPLv2 or later  
 **License URI:**       http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -18,6 +18,8 @@ WP Dev Dashboard allows you to easily view and respond to all of your unresolved
 
 ### Features ###
 * Displays plugin and theme support requests in sortable, collapsible metaboxes for ease of use.
+* View plugins and themes by user and/or slug.
+* Choose whether to show all support tickets, or just unresolved ones.
 * Implements caching to reduce load time for plugin and theme support ticket information.
 * Includes cache-busting "refresh" option to force refresh plugin and theme support ticket data.
 
@@ -46,10 +48,18 @@ WP Dev Dashboard is intended to be the go-to resource for WordPress plugin and t
 
 ## Changelog ##
 
+### 1.1.0 ###
+* Add ability to show all support tickets (both resolved and unresolved).
+* Add ability to manually add plugin & theme slugs to view in addition to those by a certain user.
+
 ### 1.0.0 ###
 * First release
 
 ## Upgrade Notice ##
+
+### 1.1.0 ###
+* Add ability to show all support tickets (both resolved and unresolved).
+* Add ability to manually add plugin & theme slugs to view in addition to those by a certain user.
 
 ### 1.0.0 ###
 First Release
