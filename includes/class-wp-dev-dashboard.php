@@ -160,6 +160,11 @@ class WP_Dev_Dashboard {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-wp-dev-dashboard-admin.php';
 
 		/**
+		 * The class responsible for defining the plugins custom WP_List_Table extender class..
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-wp-dev-dashboard-list-table.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */

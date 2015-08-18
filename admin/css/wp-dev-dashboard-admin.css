@@ -25,7 +25,8 @@ li.wpdd-resolved .dashicons {
 }
 
 .dashicons.wpdd-unresolved,
-li.wpdd-unresolved .dashicons {
+li.wpdd-unresolved .dashicons,
+.wpdd-needs-update {
 	color: #dd3d36;
 }
 
