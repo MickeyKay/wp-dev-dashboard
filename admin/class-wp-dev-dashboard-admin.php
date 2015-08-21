@@ -274,7 +274,7 @@ class WP_Dev_Dashboard_Admin {
 
 		add_settings_field(
 			'theme_slugs', // ID
-			__( 'Additional plugins', 'wp-dev-dashboard' ), // Title
+			__( 'Additional themes', 'wp-dev-dashboard' ), // Title
 			array( $this, 'render_text_input' ), // Callback
 			$this->plugin_slug, // Page
 			'main-settings', // Section
