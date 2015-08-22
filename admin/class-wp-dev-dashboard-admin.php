@@ -634,19 +634,14 @@ class WP_Dev_Dashboard_Admin {
 		$i = 0;
 		foreach ( $tickets_data as $ticket_data ) {
 
-			$icon_html = '';
-
-			// Generate status icons if ALL tickets are set to display.
-			if ( ! empty ( $this->options['show_all_tickets'] ) ) {
-				// Generate status icon.
-				if ( 'resolved' == $ticket_data['status'] ) {
-					$icon_class = 'yes';
-				} else {
-					$icon_class = 'editor-help';
-				}
-
-				$icon_html = sprintf( '<span class="dashicons dashicons-%s" title="%s"></span> ', $icon_class, ucfirst( $ticket_data['status'] ) );
+			// Generate status icons.
+			if ( 'resolved' == $ticket_data['status'] ) {
+				$icon_class = 'yes';
+			} else {
+				$icon_class = 'editor-help';
 			}
+
+			$icon_html = sprintf( '<span class="dashicons dashicons-%s" title="%s"></span> ', $icon_class, ucfirst( $ticket_data['status'] ) );
 
 			$ticket_output = sprintf( '<li class="%s">%s<a href="%s" target="_blank">%s</a> (%s)</li>',
 				'wpdd-' . $ticket_data['status'],
