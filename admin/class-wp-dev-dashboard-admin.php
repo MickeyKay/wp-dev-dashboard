@@ -59,6 +59,24 @@ class WP_Dev_Dashboard_Admin {
 	private $version;
 
 	/**
+	 * The plugin settings.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      string    $options    The plugin settings.
+	 */
+	private $options;
+
+	/**
+	 * Data to pass to JS.
+	 *
+	 * @since    1.0.0
+	 * @access   private
+	 * @var      string    $js_data    Data to pass to JS.
+	 */
+	private $js_data;
+
+	/**
 	 * The ID of the settings page screen.
 	 *
 	 * @since    1.0.0
@@ -124,6 +142,14 @@ class WP_Dev_Dashboard_Admin {
 		$this->plugin_name = $this->plugin->get( 'name' );
 		$this->version = $this->plugin->get( 'version' );
 		$this->options = get_option( $this->plugin_slug );
+		$this->js_data = array(
+			'fetch_messages' => array(
+				__( 'Fetching data, thanks for your patience. . .', 'wp-dev-dashboard' ),
+				__( 'Fetching data, this can take a bit. . .', 'wp-dev-dashboard' ),
+				__( 'Fetching data, patience is a virtue. . .', 'wp-dev-dashboard' ),
+				__( 'Fetching data, 3. . . 2. . . 1. . .', 'wp-dev-dashboard' ),
+			),
+		);
 
 	}
 
@@ -156,6 +182,8 @@ class WP_Dev_Dashboard_Admin {
 	public function enqueue_scripts() {
 
 		wp_enqueue_script( $this->plugin_slug, plugin_dir_url( __FILE__ ) . 'js/wp-dev-dashboard-admin.js', array( 'jquery' ), $this->version, true );
+
+		wp_localize_script( $this->plugin_slug, "wpddSettings", $this->js_data );
 
 		// Enqueue necessary scripts for metaboxes.
 		wp_enqueue_script( 'postbox' );
@@ -199,7 +227,6 @@ class WP_Dev_Dashboard_Admin {
 		// Set up refresh button atts.
 		$refresh_button_atts = array(
 			'href'  => '',
-			'data-wpdd-refreshing-text' => esc_attr__( 'Fetching data, this can take a bit&hellip;', 'wp-dev-dashboard' ),
 		);
 
 		?>
@@ -229,7 +256,7 @@ class WP_Dev_Dashboard_Admin {
 							echo '<span class="spinner"></span>';
 						}
 
-						$this->do_meta_boxes( $active_tab );
+						$this->do_ajax_container( 'tickets', $active_tab );
 						$this->output_settings_fields( true );
 					} elseif ( 'table' == $active_tab ) {
 						$this->output_list_table( 'plugins' );
@@ -380,6 +407,10 @@ class WP_Dev_Dashboard_Admin {
 
 	}
 
+	public function do_ajax_container( $object_type = 'tickets', $ticket_type = 'plugins' ) {
+		printf( '<div class="wpdd-ajax-container" data-wpdd-object-type="%s" data-wpdd-ticket-type="%s"><div class="wpdd-loading-div"><span class="spinner is-active"></span> <span>%s</span></div></div>', $object_type, $ticket_type, $this->js_data['fetch_messages'][ array_rand( $this->js_data['fetch_messages'] ) ] );
+	}
+
 	/**
 	 * Output metaboxes for tickets.
 	 *
@@ -409,9 +440,13 @@ class WP_Dev_Dashboard_Admin {
 	 * @since 1.0.0
 	 */
 	public function get_ajax_meta_boxes() {
+
 		$ticket_type = isset( $_POST['ticket_type'] ) ? $_POST['ticket_type'] : 'plugins';
-		$this->do_meta_boxes( $ticket_type, true );
+		$force_refresh = isset( $_POST['force_refresh'] ) ? $_POST['force_refresh'] : false;
+
+		$this->do_meta_boxes( $ticket_type, $force_refresh );
 		wp_die(); // this is required to terminate immediately and return a proper response
+
 	}
 
 	/**

@@ -3,8 +3,8 @@
 **Donate link:**       http://wordpress.org/plugins/wp-dev-dashboard  
 **Tags:**              dev, dashboard, plugin, theme, unresolved, support, requests, tickets  
 **Requires at least:** 3.5  
-**Tested up to:**      4.3  
-**Stable tag:**        1.1.0  
+**Tested up to:**      4.4  
+**Stable tag:**        1.2.0  
 **License:**           GPLv2 or later  
 **License URI:**       http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -48,6 +48,9 @@ WP Dev Dashboard is intended to be the go-to resource for WordPress plugin and t
 
 ## Changelog ##
 
+### 1.2.0 ###
+* Added dynamic Ajax loading of uncached data to improve page load speed and prevent delays.
+
 ### 1.1.0 ###
 * Add ability to show all support tickets (both resolved and unresolved).
 * Add ability to manually add plugin & theme slugs to view in addition to those by a certain user.
@@ -57,6 +60,9 @@ WP Dev Dashboard is intended to be the go-to resource for WordPress plugin and t
 * First release
 
 ## Upgrade Notice ##
+
+### 1.2.0 ###
+* Added dynamic Ajax loading of uncached data to improve page load speed and prevent delays.
 
 ### 1.1.0 ###
 * Add ability to show all support tickets (both resolved and unresolved).
