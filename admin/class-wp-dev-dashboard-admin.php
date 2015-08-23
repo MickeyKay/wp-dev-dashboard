@@ -224,11 +224,6 @@ class WP_Dev_Dashboard_Admin {
 		// Check force refresh param passed via Ajax.
 		$force_refresh = isset( $_POST['force_refresh'] ) ? true : false;
 
-		// Set up refresh button atts.
-		$refresh_button_atts = array(
-			'href'  => '',
-		);
-
 		?>
 		<?php screen_icon(); ?>
         <div id="<?php echo "{$this->plugin_slug}-settings"; ?>" class="wrap">
@@ -251,24 +246,22 @@ class WP_Dev_Dashboard_Admin {
 					if ( $is_secondary_tab ) {
 
 						// Output refresh button.
-						if ( $is_secondary_tab ) {
-							submit_button( esc_attr__( 'Refresh List', 'wp-dev-dashboard' ), 'button button-refresh', '', false, $refresh_button_atts );
-							echo '<span class="spinner"></span>';
-						}
+						$this->do_refresh_button();
 
+						// Do main metabox/table output.
 						$this->do_ajax_container( 'tickets', $active_tab );
-						$this->output_settings_fields( true );
+
 					} elseif ( 'table' == $active_tab ) {
 						$this->output_list_table( 'plugins' );
-					} else {
+					}
+					else {
 						$this->output_settings_fields();
 						submit_button( '', 'primary', '', false );
 					}
 
 					// Output refresh button.
 					if ( $is_secondary_tab ) {
-						submit_button( esc_attr__( 'Refresh List', 'wp-dev-dashboard' ), 'button button-refresh', '', false, $refresh_button_atts );
-						echo '<span class="spinner"></span>';
+						$this->do_refresh_button();
 					}
 
 					?>
@@ -407,6 +400,25 @@ class WP_Dev_Dashboard_Admin {
 
 	}
 
+	/**
+	 * Output refresh button.
+	 *
+	 * @since 1.0.0
+	 */
+	public function do_refresh_button() {
+
+		// Set up refresh button atts.
+		$refresh_button_atts = array(
+			'href'  => '',
+		);
+		?>
+		<div class="wpdd-refresh-button-container">
+			<?php submit_button( esc_attr__( 'Refresh List', 'wp-dev-dashboard' ), 'button wpdd-button-refresh', '', false, $refresh_button_atts ); ?><span class="spinner"></span>
+		</div>
+		<?php
+
+	}
+
 	public function do_ajax_container( $object_type = 'tickets', $ticket_type = 'plugins' ) {
 		printf( '<div class="wpdd-ajax-container" data-wpdd-object-type="%s" data-wpdd-ticket-type="%s"><div class="wpdd-loading-div"><span class="spinner is-active"></span> <span>%s</span></div></div>', $object_type, $ticket_type, $this->js_data['fetch_messages'][ array_rand( $this->js_data['fetch_messages'] ) ] );
 	}
@@ -435,16 +447,33 @@ class WP_Dev_Dashboard_Admin {
 	}
 
 	/**
-	 * Helper function to update ticket metaboxes via Ajax.
+	 * Helper function to update ticket/stats content via Ajax.
 	 *
 	 * @since 1.0.0
 	 */
-	public function get_ajax_meta_boxes() {
+	public function get_ajax_content() {
 
+		/**
+		 * Include necessary global: hook_suffix. For some reason this
+		 * doesn't work by default and must be included manually to
+		 * avoid throwing a notice.
+		 */
+		global $hook_suffix;
+
+		// Get paramters to load correct content.
 		$ticket_type = isset( $_POST['ticket_type'] ) ? $_POST['ticket_type'] : 'plugins';
 		$force_refresh = isset( $_POST['force_refresh'] ) ? $_POST['force_refresh'] : false;
 
-		$this->do_meta_boxes( $ticket_type, $force_refresh );
+		?>
+		<div class="wpdd-sub-tab-nav nav-tab-wrapper">
+        	<a href="#" class="button button-primary" data-wpdd-tab-target="tickets"><span class="dashicons dashicons-editor-help"></span> <?php echo __( 'Tickets', 'wp-dev-dashboard '); ?></a>
+        	<a href="#" class="button" data-wpdd-tab-target="info"><span class="dashicons dashicons-list-view" data-wpdd-tab-target="info"></span> <?php echo __( 'Statistics', 'wp-dev-dashboard '); ?></a>
+        </div>
+        <div class="wpdd-sub-tab-container">
+        	<div class="wppd-sub-tab wpdd-sub-tab-tickets active"><?php $this->do_meta_boxes( $ticket_type, $force_refresh ); ?></div>
+        	<div class="wppd-sub-tab wpdd-sub-tab-info"><?php $this->output_list_table( $ticket_type ); ?></div>
+        </div>
+        <?php
 		wp_die(); // this is required to terminate immediately and return a proper response
 
 	}
@@ -588,14 +617,29 @@ class WP_Dev_Dashboard_Admin {
 
 	}
 
-	public function output_list_table( $object_type = 'plugins') {
+	/**
+	 * Output a list table of plugins/themes.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $table_type Type of table to output (plugins|themes)
+	 */
+	public function output_list_table( $table_type = 'plugins' ) {
+
+		/**
+		 * Include necessary global: hook_suffix. For some reason this
+		 * doesn't work by default and must be included manually to
+		 * avoid throwing a notice.
+		 */
+		global $hook_suffix;
 
 		// Get array of all plugin/theme data as needed.
-		$plugins_themes = $this->get_plugins_themes( $object_type );
+		$plugins_themes = $this->get_plugins_themes( $table_type );
 
-		$list_table = new WPDD_List_Table();
-		$list_table->prepare_items(); 
-  		$list_table->display(); 
+		$list_table = new WPDD_List_Table( $table_type );
+		$list_table->prepare_items();
+  		$list_table->display();
+
 	}
 
 	/**

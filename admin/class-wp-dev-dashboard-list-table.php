@@ -23,18 +23,18 @@ class WPDD_List_Table extends WP_List_Table {
 
 	private $table_type;
 
-	function __construct( $table_type = 'plugins' ){
+	function __construct( $table_type = 'plugins', $screen_id = null ){
         global $status, $page;
 
         $this->plugin_admin = WP_Dev_Dashboard_Admin::get_instance();
         $this->table_type = $table_type;
 
-
         //Set parent defaults
         parent::__construct( array(
-            'singular'  => 'plugin_theme',     //singular name of the listed records
-            'plural'    => 'plugins_themes',    //plural name of the listed records
-            'ajax'      => false        //does this table support ajax?
+            'singular'  => 'plugin_theme', //singular name of the listed records
+            'plural'    => 'plugins_themes', //plural name of the listed records
+            'ajax'      => true, //does this table support ajax?
+           	'screen'    => $screen_id,
         ) );
 
     }
@@ -64,9 +64,9 @@ class WPDD_List_Table extends WP_List_Table {
     	$columns = $this->get_columns();
     	$hidden = array();
     	$sortable = $this->get_sortable_columns();
-    	$this->_column_headers = array($columns, $hidden, $sortable);
-    	$this->items = $this->plugin_admin->get_plugins_themes( 'plugins' );
-		
+    	$this->_column_headers = array( $columns, $hidden, $sortable );
+    	$this->items = $this->plugin_admin->get_plugins_themes( $this->table_type );
+
     	// Sort items to reflect any table sorting.
     	usort( $this->items, array( $this, 'usort_reorder' ) );
     }
@@ -148,6 +148,5 @@ class WPDD_List_Table extends WP_List_Table {
   		// Send final sort direction to usort
 		return ( $order === 'asc' ) ? $result : -$result;
 	}
-
 
 }

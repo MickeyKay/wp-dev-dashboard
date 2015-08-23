@@ -1,11 +1,14 @@
 (function( $ ) {
 	'use strict';
 
+	// Load main content via Ajax on inital page load.
 	$( document ).ready( function() {
 		load_ajax_content();
+
 	});
 
-	$( '.button-refresh' ).on( 'click', function( e ) {
+	// Hook up refresh button functionality.
+	$( '.wpdd-button-refresh' ).on( 'click', function( e ) {
 		e.preventDefault();
 
 		var $button = $( this );
@@ -13,6 +16,45 @@
 
 	});
 
+
+	$( '#wp-dev-dashboard-settings' ).on( 'click', '.wpdd-sub-tab-nav .button', function( e ) {
+
+		e.preventDefault();
+
+		var $button,
+			targetTabClass,
+			$tabsContainer;
+
+		$button = $( this );
+
+		// Don't do anything if this is already the active button.
+		if ( ! $button.hasClass( 'button-primary' ) ) {
+
+			// Toggle "active" status.
+			$button.addClass( 'button-primary' ).siblings( '.button' ).removeClass( 'button-primary' );
+
+			// Toggle visibility of tabs.
+			targetTabClass = $button.attr( 'data-wpdd-tab-target' );
+			$tabsContainer = $( '.wpdd-sub-tab-container' );
+
+			$tabsContainer.find( '.wppd-sub-tab' ).removeClass( 'active' );
+			$tabsContainer.find( '.wpdd-sub-tab-' + targetTabClass ).addClass( 'active' );
+
+		}
+
+		// Remove focus/outline from button.
+		$button.blur();
+
+	});
+
+	/**
+	 * Load content into main container via Ajax.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param {bool} forceRefresh Whether or not to force a cache-busting fetch.
+	 * @param {JQuery} $button Button used to call refresh, if used.
+	 */
 	var load_ajax_content = function( forceRefresh, $button ) {
 
 		var $ajaxContainer,
@@ -56,7 +98,7 @@
 
 		// Run Ajax request.
 		jQuery.post( ajaxurl, data, function( response ) {
-			console.log(data );
+
 			$ajaxContainer.fadeTo( 'slow', 1 ).html( response );
 
 			if ( $button ) {

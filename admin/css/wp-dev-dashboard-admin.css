@@ -9,6 +9,22 @@
 	font-size: 1.3em;
 }
 
+
+/* Refresh Buttons
+--------------------------------------------- */
+.wpdd-refresh-button-container {
+	float: right;
+}
+
+#wp-dev-dashboard-settings .spinner {
+	display: none;
+	float: none;
+}
+
+#wp-dev-dashboard-settings .spinner.is-active {
+	display: inline-block;
+}
+
 .wpdd-loading-div {
 	margin: 1em 0;
 }
@@ -18,6 +34,44 @@
 	vertical-align: middle;
 }
 
+/* Content - Sub Tabs
+--------------------------------------------- */
+.wpdd-sub-tab-nav {
+	font-size: 0;
+}
+
+.wpdd-sub-tab-nav .button {
+	margin: 0 !important;
+}
+
+.wpdd-sub-tab-nav .button:first-child {
+	border-top-right-radius: 0;
+	border-bottom-right-radius: 0;
+}
+
+.wpdd-sub-tab-nav .button:not(:first-child) {
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+#wp-dev-dashboard-settings .nav-tab-wrapper .button .dashicons {
+	bottom: -0.25em;
+}
+
+.wpdd-sub-tab-container {
+	margin: 1em 0;
+}
+
+.wppd-sub-tab {
+	display: none;
+}
+
+.wppd-sub-tab.active {
+	display: block;
+}
+
+/* Content - Metaboxes
+--------------------------------------------- */
 .wp-dev-dashboard-metaboxes {
 	overflow: hidden;
 	margin-top: 1em;
@@ -39,10 +93,8 @@ li.wpdd-unresolved .dashicons,
 	color: #dd3d36;
 }
 
-#wp-dev-dashboard-settings .button + .button {
-	margin-left: 0.75em;
-}
-
-#wp-dev-dashboard-settings .spinner {
-	float: none;
+/* Content - Table
+--------------------------------------------- */
+#wp-dev-dashboard-settings .tablenav {
+	display: none;
 }
