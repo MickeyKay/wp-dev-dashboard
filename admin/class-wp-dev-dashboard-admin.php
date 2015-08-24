@@ -232,7 +232,6 @@ class WP_Dev_Dashboard_Admin {
 	        	<?php if ( $show_secondary_tabs ) : ?>
 	        	<a href="<?php echo $tab_base_url; ?>&tab=plugins" class="nav-tab <?php echo $active_tab == 'plugins' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-plugins"></span> <?php echo __( 'Plugins', 'wp-dev-dashboard '); ?></a>
 	        	<a href="<?php echo $tab_base_url; ?>&tab=themes" class="nav-tab <?php echo $active_tab == 'themes' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-appearance"></span> <?php echo __( 'Themes', 'wp-dev-dashboard '); ?></a>
-	        	<a href="<?php echo $tab_base_url; ?>&tab=table" class="nav-tab <?php echo $active_tab == 'table' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-list-view"></span> <?php echo __( 'Table', 'wp-dev-dashboard '); ?></a>
 	        	<?php endif; ?>
 	        	<a href="<?php echo $tab_base_url; ?>&tab=settings" class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-generic"></span> <?php echo __( 'Settings', 'wp-dev-dashboard '); ?></a>
 	        </h2>
@@ -245,23 +244,12 @@ class WP_Dev_Dashboard_Admin {
 
 					if ( $is_secondary_tab ) {
 
-						// Output refresh button.
-						$this->do_refresh_button();
-
 						// Do main metabox/table output.
 						$this->do_ajax_container( 'tickets', $active_tab );
 
-					} elseif ( 'table' == $active_tab ) {
-						$this->output_list_table( 'plugins' );
-					}
-					else {
+					} else {
 						$this->output_settings_fields();
 						submit_button( '', 'primary', '', false );
-					}
-
-					// Output refresh button.
-					if ( $is_secondary_tab ) {
-						$this->do_refresh_button();
 					}
 
 					?>
@@ -463,6 +451,10 @@ class WP_Dev_Dashboard_Admin {
 		// Get paramters to load correct content.
 		$ticket_type = isset( $_POST['ticket_type'] ) ? $_POST['ticket_type'] : 'plugins';
 		$force_refresh = isset( $_POST['force_refresh'] ) ? $_POST['force_refresh'] : false;
+		$current_url = isset( $_POST['current_url'] ) ? $_POST['current_url'] : false;
+
+		// Output refresh button.
+		$this->do_refresh_button();
 
 		?>
 		<div class="wpdd-sub-tab-nav nav-tab-wrapper">
@@ -471,9 +463,13 @@ class WP_Dev_Dashboard_Admin {
         </div>
         <div class="wpdd-sub-tab-container">
         	<div class="wppd-sub-tab wpdd-sub-tab-tickets active"><?php $this->do_meta_boxes( $ticket_type, $force_refresh ); ?></div>
-        	<div class="wppd-sub-tab wpdd-sub-tab-info"><?php $this->output_list_table( $ticket_type ); ?></div>
+        	<div class="wppd-sub-tab wpdd-sub-tab-info"><?php $this->output_list_table( $ticket_type, $current_url ); ?></div>
         </div>
         <?php
+
+        // Output refresh button.
+		$this->do_refresh_button();
+
 		wp_die(); // this is required to terminate immediately and return a proper response
 
 	}
@@ -624,7 +620,7 @@ class WP_Dev_Dashboard_Admin {
 	 *
 	 * @param string $table_type Type of table to output (plugins|themes)
 	 */
-	public function output_list_table( $table_type = 'plugins' ) {
+	public function output_list_table( $table_type = 'plugins', $current_url = null ) {
 
 		/**
 		 * Include necessary global: hook_suffix. For some reason this
@@ -633,10 +629,7 @@ class WP_Dev_Dashboard_Admin {
 		 */
 		global $hook_suffix;
 
-		// Get array of all plugin/theme data as needed.
-		$plugins_themes = $this->get_plugins_themes( $table_type );
-
-		$list_table = new WPDD_List_Table( $table_type );
+		$list_table = new WPDD_List_Table( $table_type, $hook_suffix, $current_url );
 		$list_table->prepare_items();
   		$list_table->display();
 

@@ -36,6 +36,10 @@
 
 /* Content - Sub Tabs
 --------------------------------------------- */
+.wpdd-ajax-container {
+	margin: 1em 0;
+}
+
 .wpdd-sub-tab-nav {
 	font-size: 0;
 }
@@ -55,7 +59,10 @@
 }
 
 #wp-dev-dashboard-settings .nav-tab-wrapper .button .dashicons {
-	bottom: -0.25em;
+	bottom: 0.09em;
+	width: 1.1em;
+	height: auto;
+	vertical-align: middle;
 }
 
 .wpdd-sub-tab-container {
@@ -91,6 +98,10 @@ li.wpdd-resolved .dashicons {
 li.wpdd-unresolved .dashicons,
 .wpdd-needs-update {
 	color: #dd3d36;
+}
+
+.wp-dev-dashboard-metaboxes .postbox:last-child {
+	margin-bottom: 0;
 }
 
 /* Content - Table

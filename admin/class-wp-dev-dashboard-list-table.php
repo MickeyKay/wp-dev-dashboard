@@ -23,11 +23,16 @@ class WPDD_List_Table extends WP_List_Table {
 
 	private $table_type;
 
-	function __construct( $table_type = 'plugins', $screen_id = null ){
+	private $current_url;
+
+	function __construct( $table_type = 'plugins', $screen_id = null, $current_url = null ){
         global $status, $page;
 
         $this->plugin_admin = WP_Dev_Dashboard_Admin::get_instance();
         $this->table_type = $table_type;
+
+        // Add passed current URL.
+        $this->current_url = $current_url;
 
         //Set parent defaults
         parent::__construct( array(
@@ -52,13 +57,103 @@ class WPDD_List_Table extends WP_List_Table {
 			'resolved_count'   => __( 'Resolved', 'wp-dev-dashboard' ),
     	);
 
-    	// Remove tested column for themes, since it doesn't apply.
+    	// Remove columns that aren't returned for themes.
     	if ( 'themes' == $this->table_type ) {
     		unset( $columns['tested'] );
+    		unset( $columns['active_installs'] );
     	}
 
     	return $columns;
     }
+
+    /**
+	 * Print column headers, accounting for hidden and sortable columns.
+	 *
+	 * It is necessary to override the default function in
+	 * WP_List_Table because sorting is broken when called via Ajax.
+	 * The $current_url ends up set to the admin-ajax.php file, when
+	 * we need it to refer to the actual referring url.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @param bool $with_id Whether to set the id attribute or not
+	 */
+	public function print_column_headers( $with_id = true ) {
+		list( $columns, $hidden, $sortable, $primary ) = $this->get_column_info();
+
+		// Get passed URL if it exists.
+		$current_url = $this->current_url;
+
+		// Add check to see if current_url has been manually passed.
+		if ( ! $this->current_url ) {
+			$current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+		}
+
+		$current_url = remove_query_arg( 'paged', $current_url );
+
+		// Check for manually passed current_url for Ajax calls.
+		if ( $this->current_url ) {
+			$url_parts = parse_url( $this->current_url );
+			parse_str( $url_parts['query'], $query );
+			$current_orderby = ( ! empty( $query['orderby'] ) ) ? $query['orderby'] : 'name';
+			$current_order = ( ! empty( $query['order'] ) ) ? $query['order'] : 'asc';
+		} else {
+			// If no sort, default to title
+			$current_orderby = ( ! empty( $_GET['orderby'] ) ) ? $_GET['orderby'] : 'name';
+
+	  		// If no order, default to asc
+			$current_order = ( ! empty( $_GET['order'] ) ) ? $_GET['order'] : 'asc';
+		}
+
+		if ( ! empty( $columns['cb'] ) ) {
+			static $cb_counter = 1;
+			$columns['cb'] = '<label class="screen-reader-text" for="cb-select-all-' . $cb_counter . '">' . __( 'Select All' ) . '</label>'
+				. '<input id="cb-select-all-' . $cb_counter . '" type="checkbox" />';
+			$cb_counter++;
+		}
+
+		foreach ( $columns as $column_key => $column_display_name ) {
+			$class = array( 'manage-column', "column-$column_key" );
+
+			if ( in_array( $column_key, $hidden ) ) {
+				$class[] = 'hidden';
+			}
+
+			if ( 'cb' == $column_key )
+				$class[] = 'check-column';
+			elseif ( in_array( $column_key, array( 'posts', 'comments', 'links' ) ) )
+				$class[] = 'num';
+
+			if ( $column_key === $primary ) {
+				$class[] = 'column-primary';
+			}
+
+			if ( isset( $sortable[$column_key] ) ) {
+				list( $orderby, $desc_first ) = $sortable[$column_key];
+
+				if ( $current_orderby == $orderby ) {
+					$order = 'asc' == $current_order ? 'desc' : 'asc';
+					$class[] = 'sorted';
+					$class[] = $current_order;
+				} else {
+					$order = $desc_first ? 'desc' : 'asc';
+					$class[] = 'sortable';
+					$class[] = $desc_first ? 'asc' : 'desc';
+				}
+
+				$column_display_name = '<a href="' . esc_url( add_query_arg( compact( 'orderby', 'order' ), $current_url ) ) . '"><span>' . $column_display_name . '</span><span class="sorting-indicator"></span></a>';
+			}
+
+			$tag = ( 'cb' === $column_key ) ? 'td' : 'th';
+			$scope = ( 'th' === $tag ) ? 'scope="col"' : '';
+			$id = $with_id ? "id='$column_key'" : '';
+
+			if ( !empty( $class ) )
+				$class = "class='" . join( ' ', $class ) . "'";
+
+			echo "<$tag $scope $id $class>$column_display_name</$tag>";
+		}
+	}
 
     function prepare_items() {
     	$columns = $this->get_columns();
@@ -72,6 +167,7 @@ class WPDD_List_Table extends WP_List_Table {
     }
 
     function column_default( $item, $column_name ) {
+
     	switch( $column_name ) {
     		case 'name':
     			return sprintf( '<b><a href="%s" target="_blank">%s</a><b>', 'https://wordpress.org/plugins/' . $item->slug, $item->name );
@@ -121,11 +217,19 @@ class WPDD_List_Table extends WP_List_Table {
 
 	function usort_reorder( $a, $b ) {
 
-  		// If no sort, default to title
-		$orderby = ( ! empty( $_GET['orderby'] ) ) ? $_GET['orderby'] : 'name';
+		// Check for manually passed current_url for Ajax calls.
+		if ( $this->current_url ) {
+			$url_parts = parse_url( $this->current_url );
+			parse_str( $url_parts['query'], $query );
+			$orderby = ( ! empty( $query['orderby'] ) ) ? $query['orderby'] : 'name';
+			$order = ( ! empty( $query['order'] ) ) ? $query['order'] : 'asc';
+		} else {
+			// If no sort, default to title
+			$orderby = ( ! empty( $_GET['orderby'] ) ) ? $_GET['orderby'] : 'name';
 
-  		// If no order, default to asc
-		$order = ( ! empty( $_GET['order'] ) ) ? $_GET['order'] : 'asc';
+	  		// If no order, default to asc
+			$order = ( ! empty( $_GET['order'] ) ) ? $_GET['order'] : 'asc';
+		}
 
   		// Determine sort order
   		switch( $orderby ) {

@@ -3,16 +3,31 @@
 
 	// Load main content via Ajax on inital page load.
 	$( document ).ready( function() {
-		load_ajax_content();
+		wpdd_load_ajax_content();
+	});
+
+	// Trigger actions after Ajax load.
+	$( document ).on( 'wpddRefreshAfter', function() {
+
+		// Open correct tab.
+		if ( location.href.indexOf( 'orderby' ) >= 0 ) {
+			$( '.button[data-wpdd-tab-target="info"]' ).addClass( 'red') ;
+			wpdd_toggle_tabs( $( '.button[data-wpdd-tab-target="info"]' ) );
+		}
+
+		// Hook up responsive row expand/collapse functionality.
+		$( '.wpdd-sub-tab-info tbody' ).on( 'click', '.toggle-row', function() {
+			$( this ).closest( 'tr' ).toggleClass( 'is-expanded' );
+		});
 
 	});
 
 	// Hook up refresh button functionality.
-	$( '.wpdd-button-refresh' ).on( 'click', function( e ) {
+	$( '#wp-dev-dashboard-settings' ).on( 'click', '.wpdd-button-refresh', function( e ) {
 		e.preventDefault();
 
 		var $button = $( this );
-		load_ajax_content( true, $button );
+		wpdd_load_ajax_content( true, $button );
 
 	});
 
@@ -21,29 +36,32 @@
 
 		e.preventDefault();
 
-		var $button,
-			targetTabClass,
-			$tabsContainer;
+		var $button = $( this );
 
-		$button = $( this );
+		wpdd_toggle_tabs( $button );
 
-		// Don't do anything if this is already the active button.
-		if ( ! $button.hasClass( 'button-primary' ) ) {
+	});
 
-			// Toggle "active" status.
-			$button.addClass( 'button-primary' ).siblings( '.button' ).removeClass( 'button-primary' );
+	// Fix broken table-sorting links after Ajax.
+	$( document ).on( 'wpddRefreshAfter', function() {
 
-			// Toggle visibility of tabs.
-			targetTabClass = $button.attr( 'data-wpdd-tab-target' );
-			$tabsContainer = $( '.wpdd-sub-tab-container' );
+		$( '.wppd-sub-tab a[href*="admin-ajax.php"]' ).each( function() {
+			var $link,
+				linkIdentifier = 'admin-ajax.php',
+				href,
+				hrefParams,
+				newHref,
 
-			$tabsContainer.find( '.wppd-sub-tab' ).removeClass( 'active' );
-			$tabsContainer.find( '.wpdd-sub-tab-' + targetTabClass ).addClass( 'active' );
+			$link = $( this );
+			href = $link.attr( 'href' );
+			hrefParams = href.substr( href.indexOf( linkIdentifier ) + linkIdentifier.length + 1 );
+			newHref = location.href;
+			newHref += ( newHref.indexOf( '?' ) >= 0 ? '&' : '?' ) + hrefParams;
 
-		}
+			// Set new href.
+			$link.attr( 'href', newHref );
 
-		// Remove focus/outline from button.
-		$button.blur();
+		});
 
 	});
 
@@ -55,7 +73,7 @@
 	 * @param {bool} forceRefresh Whether or not to force a cache-busting fetch.
 	 * @param {JQuery} $button Button used to call refresh, if used.
 	 */
-	var load_ajax_content = function( forceRefresh, $button ) {
+	var wpdd_load_ajax_content = function( forceRefresh, $button ) {
 
 		var $ajaxContainer,
 			objectType,
@@ -90,7 +108,8 @@
 			'action':         'refresh_wpdd',
 			'object_type':    objectType,
 			'ticket_type':    ticketType,
-			'force_refresh' : forceRefresh,
+			'force_refresh':  forceRefresh,
+			'current_url':    location.href,
 		};
 
 		// Trigger event before refresh.
@@ -108,7 +127,33 @@
 
 			// Trigger event after refresh.
 			$( document ).trigger( 'wpddRefreshAfter' );
+
 		});
+
+	}
+
+	var wpdd_toggle_tabs = function( $button ) {
+
+		var targetTabClass,
+			$tabsContainer;
+
+		// Don't do anything if this is already the active button.
+		if ( ! $button.hasClass( 'button-primary' ) ) {
+
+			// Toggle "active" status.
+			$button.addClass( 'button-primary' ).siblings( '.button' ).removeClass( 'button-primary' );
+
+			// Toggle visibility of tabs.
+			targetTabClass = $button.attr( 'data-wpdd-tab-target' );
+			$tabsContainer = $( '.wpdd-sub-tab-container' );
+
+			$tabsContainer.find( '.wppd-sub-tab' ).removeClass( 'active' );
+			$tabsContainer.find( '.wpdd-sub-tab-' + targetTabClass ).addClass( 'active' );
+
+		}
+
+		// Remove focus/outline from button.
+		$button.blur();
 
 	}
 
