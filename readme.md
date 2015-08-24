@@ -46,8 +46,14 @@ WP Dev Dashboard is intended to be the go-to resource for WordPress plugin and t
 
 ## Screenshots ##
 
-### 1. The easy-to-use WP Dev Dashboard. ###
-![The easy-to-use WP Dev Dashboard.]()
+### 1. Viewing support requests for plugins/themes. ###
+![Viewing support requests for plugins/themes.]()
+
+### 2. The easy-to-parse plugin/theme statistics tables. ###
+![The easy-to-parse plugin/theme statistics tables.]()
+
+### 3. WP Dev Dashboard's settings. ###
+![WP Dev Dashboard's settings.]()
 
 
 
