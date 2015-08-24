@@ -16,7 +16,7 @@
  * Plugin Name:       WP Dev Dashboard
  * Plugin URI:        http://wordpress.org/plugins/wp-dev-dashboard
  * Description:       Easily see all of your unresolved plugin & theme support requests.
- * Version:           1.2.0
+ * Version:           1.3.0
  * Author:            Mickey Kay Creative
  * Author URI:        http://mickeykaycreative.com/
  * License:           GPL-2.0+
