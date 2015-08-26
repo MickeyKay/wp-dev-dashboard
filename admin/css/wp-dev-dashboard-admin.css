@@ -9,7 +9,6 @@
 	font-size: 1.3em;
 }
 
-
 /* Refresh Buttons
 --------------------------------------------- */
 .wpdd-refresh-button-container {
@@ -108,4 +107,16 @@ li.wpdd-unresolved .dashicons,
 --------------------------------------------- */
 #wp-dev-dashboard-settings .tablenav {
 	display: none;
+}
+
+#wp-dev-dashboard-settings .wp-list-table .sorting-indicator {
+	display: block;
+	opacity: 0;
+	filter: alpha(opacity=0);
+}
+
+#wp-dev-dashboard-settings .wp-list-table th.sorted .sorting-indicator,
+#wp-dev-dashboard-settings .wp-list-table a:hover .sorting-indicator {
+	opacity: 1;
+	filter: alpha(opacity=100);
 }

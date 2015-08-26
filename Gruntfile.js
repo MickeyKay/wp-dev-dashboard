@@ -42,10 +42,9 @@ module.exports = function( grunt ) {
    				overwrite: true,
     			replacements: [
 	    			{
-	    				  "version": "1.0.0",
 	    				from: /("version":\s*).*,\n/g,
 	    				to: '$1"<%= newVersion %>",\n'
-	    			}
+	    			},
     			]
 			},
 			readme: {
@@ -58,13 +57,23 @@ module.exports = function( grunt ) {
 	    			}
     			]
 			},
-			php: {
+			plugin: {
 				src: ['wp-dev-dashboard.php'],
    				overwrite: true,
     			replacements: [
 	    			{
 	    				from: /(\*\s*Version:\s*).*\n/g,
 	    				to: '$1<%= newVersion %>\n'
+	    			}
+    			]
+			},
+			php: {
+				src: ['includes/class-wp-dev-dashboard.php'],
+   				overwrite: true,
+    			replacements: [
+	    			{
+	    				from: /(\$this\-\>version\s=\s').*(';)\n/g,
+	    				to: '$1<%= newVersion %>$2\n'
 	    			}
     			]
 			}

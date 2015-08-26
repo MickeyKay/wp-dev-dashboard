@@ -4,7 +4,7 @@
 **Tags:**              dev, dashboard, plugin, theme, unresolved, support, requests, tickets  
 **Requires at least:** 3.5  
 **Tested up to:**      4.4  
-**Stable tag:**        1.3.0  
+**Stable tag:**        1.3.1  
 **License:**           GPLv2 or later  
 **License URI:**       http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -59,6 +59,10 @@ WP Dev Dashboard is intended to be the go-to resource for WordPress plugin and t
 
 ## Changelog ##
 
+### 1.3.1 ###
+* Minor CSS improvement to prevent table header wrapping (still wraps at intermediate screen sizes).
+* Bump $this->version.
+
 ### 1.3.0 ###
 * Add new "statistics" sub-tab for both plugins and themes.
 
@@ -74,6 +78,10 @@ WP Dev Dashboard is intended to be the go-to resource for WordPress plugin and t
 * First release
 
 ## Upgrade Notice ##
+
+### 1.3.1 ###
+* Minor CSS improvement to prevent table header wrapping.
+* Bump $this->version.
 
 ### 1.3.0 ###
 * Add new "statistics" sub-tab for both plugins and themes.

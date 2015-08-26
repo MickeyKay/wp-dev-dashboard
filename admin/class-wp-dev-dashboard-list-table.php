@@ -44,6 +44,23 @@ class WPDD_List_Table extends WP_List_Table {
 
     }
 
+    /**
+	 * Remove the default "fixed" class so sorting triangles don't wrap.
+	 *
+	 * @since 1.3.1
+	 *
+	 * @return array List of CSS classes for the table tag.
+	 */
+	protected function get_table_classes() {
+		$classes = parent::get_table_classes();
+
+		if ( ( $key = array_search( 'fixed', $classes ) ) !== false ) {
+		    unset( $classes[ $key ] );
+		}
+
+		return $classes;
+	}
+
     function get_columns(){
     	$columns = array(
 			'name'             => __( 'Title', 'wp-dev-dashboard' ),
