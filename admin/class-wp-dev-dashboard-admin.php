@@ -949,6 +949,10 @@ class WP_Dev_Dashboard_Admin {
 
 		$html = $this->get_page_html( $plugin_theme_slug, $page_num, $ticket_type );
 
+		if( is_wp_error( $html ) ) {
+			return false;
+		}
+		
 		$html = str_get_html( $html );
 
 		$table = $html->find( 'table#latest', 0 );
@@ -1013,7 +1017,7 @@ class WP_Dev_Dashboard_Admin {
 			$response = wp_remote_retrieve_body( $response );
 
 		} else {
-			return WP_Error( 'error', __( 'Attempt to fetch failed', 'wp-dev-dashboard' ) );
+			return new WP_Error( 'error', __( 'Attempt to fetch failed', 'wp-dev-dashboard' ) );
 			// Log errors?
 		}
 
