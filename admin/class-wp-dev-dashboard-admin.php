@@ -952,7 +952,7 @@ class WP_Dev_Dashboard_Admin {
 		if( is_wp_error( $html ) ) {
 			return false;
 		}
-		
+
 		$html = str_get_html( $html );
 
 		$table = $html->find( 'li[class=bbp-body]', 0 );
