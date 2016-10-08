@@ -222,6 +222,12 @@ class WPDD_List_Table extends WP_List_Table {
     			return sprintf( '<span class="%s">%s</span>', $class, $item->tested );
     		case 'rating':
     			return $item->rating ? $item->rating : __( 'NA', 'wp-dev-dashboard' );
+		case 'active_installs':
+		case 'downloaded':
+		case 'num_ratings':
+		case 'unresolved_count':
+		case 'resolved_count':
+				return number_format_i18n( $item->$column_name );
     		default:
 				return $item->$column_name;
   		}
