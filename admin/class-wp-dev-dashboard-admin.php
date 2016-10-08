@@ -951,39 +951,27 @@ class WP_Dev_Dashboard_Admin {
 
 		$html = str_get_html( $html );
 
-		$table = $html->find( 'table#latest', 0 );
+		$table = $html->find( 'li[class=bbp-body]', 0 );
 
 		// Return false if no table is found.
 		if ( empty ( $table ) ) {
 			return false;
 		}
 
-		// Remove thead row.
-		$table->find( 'tr', 0 )->outertext = '';
-
 		// Generate array of row data.
-		$rows = $table->find( 'tr' );
+		$rows = $table->find( 'ul[class=topic]' );
 		$rows_data = array();
 
 		foreach ( $rows as $row ) {
 
-			/**
-			 * Make sure not to include any empty rows, which can also
-			 * arise as a result of manually omitting a row via the
-			 * following code: $row->outertext = '';
-			 */
-			if ( empty ( $row->outertext ) ) {
-				continue;
-			}
-
 			// Get row attributes.
-			$link = $row->find( 'a', 0 );
-			$time = $row->find( 'small', 0 );
+			$link = $row->find( 'li[class=bbp-topic-title]', 0 )->find( 'a', 0 );
+			$time = $row->find( 'li[class=bbp-topic-freshness]', 0 )->find( 'a', 0 );
 
 			$row_data['href'] = $link->href;
 			$row_data['text'] = $link->innertext;
 			$row_data['time'] = $time->innertext;
-			$row_data['status'] = ( strpos( $row->class, 'resolved') !== false ) ? 'resolved' : 'unresolved';
+			$row_data['status'] = ( strpos( $link->innertext, '[Resolved]') === 0 ) ? 'resolved' : 'unresolved';
 
 			$rows_data[] = $row_data;
 
@@ -1000,9 +988,9 @@ class WP_Dev_Dashboard_Admin {
 		}
 
 		if ( 'plugins' == $ticket_type ) {
-			$remote_url = "https://wordpress.org/support/plugin/{$plugin_theme_slug}/page/{$page_num}";
+			$remote_url = "https://wordpress.org/support/plugin/{$plugin_theme_slug}/active/page/{$page_num}";
 		} else {
-			$remote_url = "https://wordpress.org/support/theme/{$plugin_theme_slug}/page/{$page_num}";
+			$remote_url = "https://wordpress.org/support/theme/{$plugin_theme_slug}/active/page/{$page_num}";
 		}
 
 		$response = wp_remote_get( $remote_url );
