@@ -209,6 +209,8 @@ class WPDD_List_Table extends WP_List_Table {
     				}
     			}
 
+    			$class = '';
+
     			if ( $wp_version ) {
     				if ( version_compare( $item->tested, $wp_version ) >= 0 ) {
     					$class = 'wpdd-current';

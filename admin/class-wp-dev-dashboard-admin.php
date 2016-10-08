@@ -950,6 +950,7 @@ class WP_Dev_Dashboard_Admin {
 		$html = $this->get_page_html( $plugin_theme_slug, $page_num, $ticket_type );
 
 		if( is_wp_error( $html ) ) {
+			printf( __( 'WP Dev Dashboard error: %s (%s)<br />', 'wp-dev-dashboard' ), $html->get_error_message(), $plugin_theme_slug );
 			return false;
 		}
 
@@ -1005,8 +1006,7 @@ class WP_Dev_Dashboard_Admin {
 			$response = wp_remote_retrieve_body( $response );
 
 		} else {
-			return new WP_Error( 'error', __( 'Attempt to fetch failed', 'wp-dev-dashboard' ) );
-			// Log errors?
+			return new WP_Error( 'error', sprintf( __( 'Attempt to fetch support forums HTML failed (%s)', 'wp-dev-dashboard' ), $plugin_theme_slug ) );
 		}
 
 		return $response;
