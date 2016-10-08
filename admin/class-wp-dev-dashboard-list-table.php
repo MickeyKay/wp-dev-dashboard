@@ -111,7 +111,7 @@ class WPDD_List_Table extends WP_List_Table {
 		// Check for manually passed current_url for Ajax calls.
 		if ( $this->current_url ) {
 			$url_parts = parse_url( $this->current_url );
-			parse_str( $url_parts['query'], $query );
+			if ( is_array( $url_parts ) && array_key_exists( 'query', $url_parts ) ) { parse_str( $url_parts['query'], $query ); } else { $query = array(); }
 			$current_orderby = ( ! empty( $query['orderby'] ) ) ? $query['orderby'] : 'name';
 			$current_order = ( ! empty( $query['order'] ) ) ? $query['order'] : 'asc';
 		} else {
@@ -237,7 +237,7 @@ class WPDD_List_Table extends WP_List_Table {
 		// Check for manually passed current_url for Ajax calls.
 		if ( $this->current_url ) {
 			$url_parts = parse_url( $this->current_url );
-			parse_str( $url_parts['query'], $query );
+			if ( is_array( $url_parts ) && array_key_exists( 'query', $url_parts ) ) { parse_str( $url_parts['query'], $query ); } else { $query = array(); }
 			$orderby = ( ! empty( $query['orderby'] ) ) ? $query['orderby'] : 'name';
 			$order = ( ! empty( $query['order'] ) ) ? $query['order'] : 'asc';
 		} else {
