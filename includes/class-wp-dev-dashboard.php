@@ -114,7 +114,7 @@ class WP_Dev_Dashboard {
 
 		$this->slug = 'wp-dev-dashboard';
 		$this->name = __( 'WP Dev Dashboard', 'wp-dev-dashboard' );
-		$this->version = '1.3.1';
+		$this->version = '1.3.2';
 
 		$this->load_dependencies();
 		$this->set_locale();

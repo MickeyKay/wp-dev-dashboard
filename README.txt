@@ -4,7 +4,7 @@ Donate link:       http://wordpress.org/plugins/wp-dev-dashboard
 Tags:              dev, dashboard, plugin, theme, unresolved, support, requests, tickets
 Requires at least: 3.5
 Tested up to:      4.4
-Stable tag:        1.3.1
+Stable tag:        1.3.2
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 
