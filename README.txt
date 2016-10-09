@@ -14,6 +14,8 @@ The better tool for monitoring your plugins & themes, including support requests
 
 **Like this plugin? Please consider [leaving a 5-star review](https://wordpress.org/support/view/plugin-reviews/wp-dev-dashboard).**
 
+> Some of WP Dev Dashboard's features are being ported over to the [v3 WordPress plugin directory](https://make.wordpress.org/meta/2016/07/12/plugin-directory-v3-open-beta/)!
+
 WP Dev Dashboard takes improves upon the default plugin/theme interfaces for authors, and allows you to easily:
 
 1. View and respond to all of your unresolved plugin & theme support requests.
@@ -53,6 +55,12 @@ WP Dev Dashboard is intended to be the go-to resource for WordPress plugin and t
 
 == Changelog ==
 
+= 1.3.2 =
+* Fix parsing issue with updated support forum markup. (@gregross)
+* Clean up PHP warnings/notices. (@gregross)
+* Improve error handling. (@gregross)
+* Add number formatting to the statistics chart. (@gregross)
+
 = 1.3.1 =
 * Minor CSS improvement to prevent table header wrapping (still wraps at intermediate screen sizes).
 * Bump $this->version.
@@ -72,6 +80,12 @@ WP Dev Dashboard is intended to be the go-to resource for WordPress plugin and t
 * First release
 
 == Upgrade Notice ==
+
+= 1.3.2 =
+* Fix parsing issue with updated support forum markup. (@gregross)
+* Clean up PHP warnings/notices. (@gregross)
+* Improve error handling. (@gregross)
+* Add number formatting to the statistics chart. (@gregross)
 
 = 1.3.1 =
 * Minor CSS improvement to prevent table header wrapping.
