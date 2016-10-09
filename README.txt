@@ -4,7 +4,7 @@ Donate link:       http://wordpress.org/plugins/wp-dev-dashboard
 Tags:              dev, dashboard, plugin, theme, unresolved, support, requests, tickets
 Requires at least: 3.5
 Tested up to:      4.4
-Stable tag:        1.3.2
+Stable tag:        1.4
 License:           GPLv2 or later
 License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,6 +55,9 @@ WP Dev Dashboard is intended to be the go-to resource for WordPress plugin and t
 
 == Changelog ==
 
+= 1.4 =
+* Add ability to order plugins/themes tabs.
+
 = 1.3.2 =
 * Fix parsing issue with updated support forum markup. (@gregross)
 * Clean up PHP warnings/notices. (@gregross)
@@ -80,6 +83,9 @@ WP Dev Dashboard is intended to be the go-to resource for WordPress plugin and t
 * First release
 
 == Upgrade Notice ==
+
+= 1.4 =
+* Add ability to order plugins/themes tabs.
 
 = 1.3.2 =
 * Fix parsing issue with updated support forum markup. (@gregross)
