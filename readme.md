@@ -1,18 +1,20 @@
 # WP Dev Dashboard #
-**Contributors:**      McGuive7
-**Donate link:**       http://wordpress.org/plugins/wp-dev-dashboard
-**Tags:**              dev, dashboard, plugin, theme, unresolved, support, requests, tickets
-**Requires at least:** 3.5
-**Tested up to:**      4.6
-**Stable tag:**        1.3.1
-**License:**           GPLv2 or later
-**License URI:**       http://www.gnu.org/licenses/gpl-2.0.html
+**Contributors:**      McGuive7  
+**Donate link:**       http://wordpress.org/plugins/wp-dev-dashboard  
+**Tags:**              dev, dashboard, plugin, theme, unresolved, support, requests, tickets  
+**Requires at least:** 3.5  
+**Tested up to:**      4.4  
+**Stable tag:**        1.4  
+**License:**           GPLv2 or later  
+**License URI:**       http://www.gnu.org/licenses/gpl-2.0.html  
 
 The better tool for monitoring your plugins & themes, including support requests, download stats, version support, and more.
 
 ## Description ##
 
 **Like this plugin? Please consider [leaving a 5-star review](https://wordpress.org/support/view/plugin-reviews/wp-dev-dashboard).**
+
+> Some of WP Dev Dashboard's features are being ported over to the [v3 WordPress plugin directory](https://make.wordpress.org/meta/2016/07/12/plugin-directory-v3-open-beta/)!
 
 WP Dev Dashboard takes improves upon the default plugin/theme interfaces for authors, and allows you to easily:
 
@@ -59,6 +61,15 @@ WP Dev Dashboard is intended to be the go-to resource for WordPress plugin and t
 
 ## Changelog ##
 
+### 1.4 ###
+* Add ability to order plugins/themes tabs.
+
+### 1.3.2 ###
+* Fix parsing issue with updated support forum markup. (@gregross)
+* Clean up PHP warnings/notices. (@gregross)
+* Improve error handling. (@gregross)
+* Add number formatting to the statistics chart. (@gregross)
+
 ### 1.3.1 ###
 * Minor CSS improvement to prevent table header wrapping (still wraps at intermediate screen sizes).
 * Bump $this->version.
@@ -78,6 +89,15 @@ WP Dev Dashboard is intended to be the go-to resource for WordPress plugin and t
 * First release
 
 ## Upgrade Notice ##
+
+### 1.4 ###
+* Add ability to order plugins/themes tabs.
+
+### 1.3.2 ###
+* Fix parsing issue with updated support forum markup. (@gregross)
+* Clean up PHP warnings/notices. (@gregross)
+* Improve error handling. (@gregross)
+* Add number formatting to the statistics chart. (@gregross)
 
 ### 1.3.1 ###
 * Minor CSS improvement to prevent table header wrapping.

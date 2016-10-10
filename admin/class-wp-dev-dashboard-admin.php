@@ -230,8 +230,13 @@ class WP_Dev_Dashboard_Admin {
 	        <h1><?php echo $this->plugin_name; ?></h1><br />
 	        <h2 class="nav-tab-wrapper">
 	        	<?php if ( $show_secondary_tabs ) : ?>
-	        	<a href="<?php echo $tab_base_url; ?>&tab=plugins" class="nav-tab <?php echo $active_tab == 'plugins' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-plugins"></span> <?php echo __( 'Plugins', 'wp-dev-dashboard '); ?></a>
-	        	<a href="<?php echo $tab_base_url; ?>&tab=themes" class="nav-tab <?php echo $active_tab == 'themes' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-appearance"></span> <?php echo __( 'Themes', 'wp-dev-dashboard '); ?></a>
+	        		<?php if ( 'themes_plugins' == $this->options['tab_order'] ) : ?>
+	        		<a href="<?php echo $tab_base_url; ?>&tab=themes" class="nav-tab <?php echo $active_tab == 'themes' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-appearance"></span> <?php echo __( 'Themes', 'wp-dev-dashboard '); ?></a>
+		        	<a href="<?php echo $tab_base_url; ?>&tab=plugins" class="nav-tab <?php echo $active_tab == 'plugins' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-plugins"></span> <?php echo __( 'Plugins', 'wp-dev-dashboard '); ?></a>
+		        	<?php else: ?>
+		        	<a href="<?php echo $tab_base_url; ?>&tab=plugins" class="nav-tab <?php echo $active_tab == 'plugins' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-plugins"></span> <?php echo __( 'Plugins', 'wp-dev-dashboard '); ?></a>
+		        	<a href="<?php echo $tab_base_url; ?>&tab=themes" class="nav-tab <?php echo $active_tab == 'themes' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-appearance"></span> <?php echo __( 'Themes', 'wp-dev-dashboard '); ?></a>
+		        	<?php endif; ?>
 	        	<?php endif; ?>
 	        	<a href="<?php echo $tab_base_url; ?>&tab=settings" class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-generic"></span> <?php echo __( 'Settings', 'wp-dev-dashboard '); ?></a>
 	        </h2>
@@ -326,6 +331,21 @@ class WP_Dev_Dashboard_Admin {
 			)
 		);
 
+		add_settings_field(
+			'tab_order', // ID
+			__( 'Tab Order', 'wp-dev-dashboard' ), // Title
+			array( $this, 'render_select' ), // Callback
+			$this->plugin_slug, // Page
+			'main-settings', // Section
+			array( // Args
+				'id' => 'tab_order',
+				'options' => array(
+					'plugins_themes' => __( 'Plugins/Themes' ),
+					'themes_plugins' => __( 'Themes/Plugins' ),
+				),
+			)
+		);
+
 	}
 
 	public function output_settings_fields( $hidden = false ) {
@@ -384,6 +404,38 @@ class WP_Dev_Dashboard_Admin {
             $option_name,
             checked( 1, $option_value, false ),
             ! empty( $args['description'] ) ? $args['description'] : ''
+        );
+
+	}
+
+	/**
+	 * Select settings field callback.
+	 *
+	 * @since 1.4
+	 *
+	 * @param array $args Args from add_settings_field().
+	 */
+	function render_select( $args ) {
+
+		$option_name = $this->plugin_slug . '[' . $args['id'] . ']';
+		$option_value = ! empty( $this->options[ $args['id'] ] ) ? $this->options[ $args['id'] ] : '';
+
+		$options = isset( $args['options'] ) ? $args['options'] : '';
+
+		if ( empty( $options ) ) {
+			return '';
+		}
+
+		$options_html = '';
+		foreach ( $options as $slug => $name ) {
+			$options_html .= sprintf( '<option value="%s" %s>%s</option>', $slug, selected( $option_value, $slug, false ), $name );
+		}
+
+		printf(
+            '<select id="%s" name="%s"/>%s</select>',
+            $option_name,
+            $option_name,
+            $options_html
         );
 
 	}
