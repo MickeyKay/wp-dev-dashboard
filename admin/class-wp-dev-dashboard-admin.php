@@ -219,8 +219,9 @@ class WP_Dev_Dashboard_Admin {
 		$tab_base_url = "?page={$this->plugin_slug}";
 		$active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'plugins';
 		$show_secondary_tabs = ! empty( $this->options['username'] ) || ! empty( $this->options['plugin_slugs'] ) || ! empty( $this->options['theme_slugs'] );
-		$is_secondary_tab = ( 'plugins' == $active_tab || 'themes' == $active_tab ) && ( $show_secondary_tabs ) ;
-
+		$is_secondary_tab = ( 'plugins' == $active_tab || 'themes' == $active_tab ) && ( $show_secondary_tabs );
+		$tab_order = ( array_key_exists( 'tab_order', $this->options ) ) ? $this->options['tab_order'] : 'themes_plugins';
+		
 		// Check force refresh param passed via Ajax.
 		$force_refresh = isset( $_POST['force_refresh'] ) ? true : false;
 
@@ -230,7 +231,7 @@ class WP_Dev_Dashboard_Admin {
 	        <h1><?php echo $this->plugin_name; ?></h1><br />
 	        <h2 class="nav-tab-wrapper">
 	        	<?php if ( $show_secondary_tabs ) : ?>
-	        		<?php if ( 'themes_plugins' == $this->options['tab_order'] ) : ?>
+	        		<?php if ( 'themes_plugins' == $tab_order ) : ?>
 	        		<a href="<?php echo $tab_base_url; ?>&tab=themes" class="nav-tab <?php echo $active_tab == 'themes' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-appearance"></span> <?php echo __( 'Themes', 'wp-dev-dashboard '); ?></a>
 		        	<a href="<?php echo $tab_base_url; ?>&tab=plugins" class="nav-tab <?php echo $active_tab == 'plugins' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-plugins"></span> <?php echo __( 'Plugins', 'wp-dev-dashboard '); ?></a>
 		        	<?php else: ?>
