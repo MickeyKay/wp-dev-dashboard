@@ -1,4 +1,5 @@
 <?php
+use Sunra\PhpSimple\HtmlDomParser;
 
 /**
  * The dashboard-specific functionality of the plugin.
@@ -1006,7 +1007,7 @@ class WP_Dev_Dashboard_Admin {
 			return false;
 		}
 
-		$html = str_get_html( $html );
+		$html = HtmlDomParser::str_get_html( $html );
 
 		$table = $html->find( 'li[class=bbp-body]', 0 );
 
