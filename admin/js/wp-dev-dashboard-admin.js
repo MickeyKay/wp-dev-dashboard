@@ -117,6 +117,14 @@
 
 		// Run Ajax request.
 		jQuery.post( ajaxurl, data, function( response ) {
+			var lastSortList, lastStatsOrder;
+
+			lastSortList = $( '.wdd-stats-table' );
+			if( lastSortList.length > 0 ) {
+				lastStatsOrder = lastSortList[0].config.sortList;
+			} else {
+				lastStatsOrder = [0,0];
+			}
 
 			$ajaxContainer.fadeTo( 'slow', 1 ).html( response );
 
@@ -124,6 +132,11 @@
 				$button.val( buttonOrigText ).prop( 'disabled', false );
 				$spinner.toggleClass( 'is-active');
 			}
+
+			$( '.wdd-stats-table' ).tablesorter({
+				// sort on the date column, order dsc
+				sortList: [lastStatsOrder]
+			});
 
 			// Trigger event after refresh.
 			$( document ).trigger( 'wpddRefreshAfter' );
