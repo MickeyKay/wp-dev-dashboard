@@ -266,17 +266,6 @@ class WP_Dev_Dashboard_Admin {
 		<?php screen_icon(); ?>
         <div id="<?php echo "{$this->plugin_slug}-settings"; ?>" class="wrap">
 	        <h1><?php echo $this->plugin_name; ?></h1><br />
-	        <h2 class="nav-tab-wrapper">
-	        	<?php if ( $show_secondary_tabs ) : ?>
-	        		<?php if ( 'themes_plugins' == $tab_order ) : ?>
-	        		<a href="<?php echo $tab_base_url; ?>&tab=themes" class="nav-tab <?php echo $active_tab == 'themes' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-appearance"></span> <?php echo __( 'Themes', 'wp-dev-dashboard '); ?></a>
-		        	<a href="<?php echo $tab_base_url; ?>&tab=plugins" class="nav-tab <?php echo $active_tab == 'plugins' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-plugins"></span> <?php echo __( 'Plugins', 'wp-dev-dashboard '); ?></a>
-		        	<?php else: ?>
-		        	<a href="<?php echo $tab_base_url; ?>&tab=plugins" class="nav-tab <?php echo $active_tab == 'plugins' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-plugins"></span> <?php echo __( 'Plugins', 'wp-dev-dashboard '); ?></a>
-		        	<a href="<?php echo $tab_base_url; ?>&tab=themes" class="nav-tab <?php echo $active_tab == 'themes' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-appearance"></span> <?php echo __( 'Themes', 'wp-dev-dashboard '); ?></a>
-		        	<?php endif; ?>
-	        	<?php endif; ?>
-	        </h2>
 			<div id="poststuff" data-wpdd-tab="<?php echo $active_tab; ?>">
 				<form action='options.php' method='post'>
 					<?php
@@ -496,7 +485,7 @@ class WP_Dev_Dashboard_Admin {
 	 * @param string $ticket_type   Type of ticket to output.
 	 * @param bool   $force_refresh Whether or not to force an uncached refresh.
 	 */
-	public function do_meta_boxes( $ticket_type = 'plugins', $force_refresh = false ) {
+	public function do_meta_boxes( $force_refresh = false ) {
 		?>
 		<div class="<?php echo "{$this->plugin_slug}-metaboxes"; ?>">
 		<?php
@@ -504,7 +493,8 @@ class WP_Dev_Dashboard_Admin {
 			wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false );
 			wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
 
-			$this->add_ticket_metaboxes( $ticket_type, $force_refresh );
+			$this->add_ticket_metaboxes( 'plugins', $force_refresh );
+			$this->add_ticket_metaboxes( 'themes', $force_refresh );
 			?>
 			<div id="postbox-container-1" class="postbox-container"><?php do_meta_boxes( $this->plugin_slug, 'normal', null ); ?></div>
 		</div>
@@ -526,7 +516,6 @@ class WP_Dev_Dashboard_Admin {
 		global $hook_suffix;
 
 		// Get paramters to load correct content.
-		$ticket_type = isset( $_POST['ticket_type'] ) ? $_POST['ticket_type'] : 'plugins';
 		$force_refresh = isset( $_POST['force_refresh'] ) ? $_POST['force_refresh'] : false;
 		$current_url = isset( $_POST['current_url'] ) ? $_POST['current_url'] : false;
 
@@ -539,8 +528,8 @@ class WP_Dev_Dashboard_Admin {
         	<a href="#" class="button" data-wpdd-tab-target="info"><span class="dashicons dashicons-list-view" data-wpdd-tab-target="info"></span> <?php echo __( 'Statistics', 'wp-dev-dashboard '); ?></a>
         </div>
         <div class="wpdd-sub-tab-container">
-        	<div class="wppd-sub-tab wpdd-sub-tab-tickets active"><?php $this->do_meta_boxes( $ticket_type, $force_refresh ); ?></div>
-        	<div class="wppd-sub-tab wpdd-sub-tab-info"><?php $this->output_list_table( $ticket_type, $current_url ); ?></div>
+        	<div class="wppd-sub-tab wpdd-sub-tab-tickets active"><?php $this->do_meta_boxes( $force_refresh ); ?></div>
+        	<div class="wppd-sub-tab wpdd-sub-tab-info"><?php $this->output_list_table( $current_url ); ?></div>
         </div>
         <?php
 
@@ -697,7 +686,7 @@ class WP_Dev_Dashboard_Admin {
 	 *
 	 * @param string $table_type Type of table to output (plugins|themes)
 	 */
-	public function output_list_table( $table_type = 'plugins', $current_url = null ) {
+	public function output_list_table( $current_url = null ) {
 
 		/**
 		 * Include necessary global: hook_suffix. For some reason this
@@ -706,7 +695,7 @@ class WP_Dev_Dashboard_Admin {
 		 */
 		global $hook_suffix;
 
-		$list_table = new WPDD_List_Table( $table_type, $hook_suffix, $current_url );
+		$list_table = new WPDD_List_Table( $hook_suffix, $current_url );
 		$list_table->prepare_items();
   		$list_table->display();
 
@@ -736,6 +725,8 @@ class WP_Dev_Dashboard_Admin {
 		// Loop through all plugins.
 		foreach ( $plugins_themes as $index => $plugins_theme ) {
 
+			$plugins_themes[ $index]->type = $ticket_type;
+		
 			// Initialize ticket count to zero in case we have to return early.
 			$plugins_themes[ $index ]->unresolved_count = 0;
 			$plugins_themes[ $index ]->resolved_count = 0;
@@ -1056,6 +1047,7 @@ class WP_Dev_Dashboard_Admin {
 			$row_data['status'] = ( strpos( $link->innertext, '[Resolved]') === 0 ) ? 'resolved' : 'unresolved';
 			$row_data['sticky'] = ( strpos( $row->class, 'sticky') !== false ) ? true : false;
 			$row_data['closed'] = ( strpos( $row->class, 'status-closed') !== false ) ? true : false;
+			$row_data['type'] = $ticket_type;
 			
 			$rows_data[] = $row_data;
 

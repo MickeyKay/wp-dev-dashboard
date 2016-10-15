@@ -14,7 +14,7 @@
 
 // Require list table file if not already included.
 if( ! class_exists( 'WP_List_Table' ) ){
-    require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
+	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
 class WPDD_List_Table extends WP_List_Table {
@@ -25,26 +25,25 @@ class WPDD_List_Table extends WP_List_Table {
 
 	private $current_url;
 
-	function __construct( $table_type = 'plugins', $screen_id = null, $current_url = null ){
-        global $status, $page;
+	function __construct( $screen_id = null, $current_url = null ){
+	    global $status, $page;
 
-        $this->plugin_admin = WP_Dev_Dashboard_Admin::get_instance();
-        $this->table_type = $table_type;
+	    $this->plugin_admin = WP_Dev_Dashboard_Admin::get_instance();
 
-        // Add passed current URL.
-        $this->current_url = $current_url;
+	    // Add passed current URL.
+	    $this->current_url = $current_url;
 
-        //Set parent defaults
-        parent::__construct( array(
-            'singular'  => 'plugin_theme', //singular name of the listed records
-            'plural'    => 'plugins_themes', //plural name of the listed records
-            'ajax'      => true, //does this table support ajax?
-           	'screen'    => $screen_id,
-        ) );
+	    //Set parent defaults
+	    parent::__construct( array(
+	        'singular'  => 'plugin_theme', //singular name of the listed records
+	        'plural'    => 'plugins_themes', //plural name of the listed records
+	        'ajax'      => true, //does this table support ajax?
+	       	'screen'    => $screen_id,
+	    ) );
 
-    }
+	}
 
-    /**
+	/**
 	 * Remove the default "fixed" class so sorting triangles don't wrap.
 	 *
 	 * @since 1.3.1
@@ -61,9 +60,10 @@ class WPDD_List_Table extends WP_List_Table {
 		return $classes;
 	}
 
-    function get_columns(){
-    	$columns = array(
+	function get_columns(){
+		$columns = array(
 			'name'             => __( 'Title', 'wp-dev-dashboard' ),
+			'type'             => __( 'Type', 'wp-dev-dashboard' ),
 			'version'          => __( 'Version', 'wp-dev-dashboard' ),
 			'tested'           => __( 'WP Version Tested', 'wp-dev-dashboard' ),
 			'rating'           => __( 'Rating', 'wp-dev-dashboard' ),
@@ -72,18 +72,12 @@ class WPDD_List_Table extends WP_List_Table {
 			'downloaded'       => __( 'Downloads', 'wp-dev-dashboard' ),
 			'unresolved_count' => __( 'Unresolved', 'wp-dev-dashboard' ),
 			'resolved_count'   => __( 'Resolved', 'wp-dev-dashboard' ),
-    	);
+		);
 
-    	// Remove columns that aren't returned for themes.
-    	if ( 'themes' == $this->table_type ) {
-    		unset( $columns['tested'] );
-    		unset( $columns['active_installs'] );
-    	}
+		return $columns;
+	}
 
-    	return $columns;
-    }
-
-    /**
+	/**
 	 * Print column headers, accounting for hidden and sortable columns.
 	 *
 	 * It is necessary to override the default function in
@@ -180,55 +174,62 @@ class WPDD_List_Table extends WP_List_Table {
 		}
 	}
 
-    function prepare_items() {
-    	$columns = $this->get_columns();
-    	$hidden = array();
-    	$sortable = $this->get_sortable_columns();
-    	$this->_column_headers = array( $columns, $hidden, $sortable );
-    	$this->items = $this->plugin_admin->get_plugins_themes( $this->table_type );
+	function prepare_items() {
+		$columns = $this->get_columns();
+		$hidden = array();
+		$sortable = $this->get_sortable_columns();
+		$this->_column_headers = array( $columns, $hidden, $sortable );
+		$this->items = array_merge( $this->plugin_admin->get_plugins_themes( 'plugins' ), $this->plugin_admin->get_plugins_themes( 'themes' ) );
 
-    	// Sort items to reflect any table sorting.
-    	usort( $this->items, array( $this, 'usort_reorder' ) );
-    }
+		// Sort items to reflect any table sorting.
+		usort( $this->items, array( $this, 'usort_reorder' ) );
+	}
 
-    function column_default( $item, $column_name ) {
+	function column_default( $item, $column_name ) {
 
-    	switch( $column_name ) {
-    		case 'name':
-    			return sprintf( '<b><a href="%s" target="_blank">%s</a><b>', 'https://wordpress.org/plugins/' . $item->slug, $item->name );
-    		case 'version':
-    			return $item->version;
-    		case 'tested':
-    			$update_data = get_site_transient( 'update_core' );
-    			$wp_branches = $update_data->updates;
+		switch( $column_name ) {
+			case 'name':
+				return sprintf( '<b><a href="%s" target="_blank">%s</a><b>', 'https://wordpress.org/plugins/' . $item->slug, $item->name );
+			case 'type':
+				return 'plugins' == $item->type ? __( 'Plugin', 'wp-dev-dashboard' ) : __( 'Theme', 'wp-dev-dashboard' );
+			case 'version':
+				return $item->version;
+			case 'tested':
+				$update_data = get_site_transient( 'update_core' );
+				$wp_branches = $update_data->updates;
 
-    			$wp_version = '';
-    			foreach( $wp_branches as $index => $branch ) {
-    				if ( 'latest' == $branch->response ) {
-    					$wp_version = $wp_branches[ $index ]->version;
-    				}
-    			}
+				$wp_version = '';
+				foreach( $wp_branches as $index => $branch ) {
+					if ( 'latest' == $branch->response ) {
+						$wp_version = $wp_branches[ $index ]->version;
+					}
+				}
 
-    			$class = '';
+				$class = '';
 
-    			if ( $wp_version ) {
-    				if ( version_compare( $item->tested, $wp_version ) >= 0 ) {
-    					$class = 'wpdd-current';
-    				} else {
-    					$class = 'wpdd-needs-update';
-    				}
-    			}
+				if ( $wp_version ) {
+					if ( version_compare( $item->tested, $wp_version ) >= 0 ) {
+						$class = 'wpdd-current';
+					} else {
+						$class = 'wpdd-needs-update';
+					}
+				}
 
-    			return sprintf( '<span class="%s">%s</span>', $class, $item->tested );
-    		case 'rating':
-    			return $item->rating ? $item->rating : __( 'NA', 'wp-dev-dashboard' );
+				if ( '' == $item->tested ) {
+					$class = '';
+					$item->tested = __( 'N/A', 'wp-dev-dashboard' );
+				}
+
+				return sprintf( '<span class="%s">%s</span>', $class, $item->tested );
+			case 'rating':
+				return $item->rating ? $item->rating : __( 'NA', 'wp-dev-dashboard' );
 		case 'active_installs':
 		case 'downloaded':
 		case 'num_ratings':
 		case 'unresolved_count':
 		case 'resolved_count':
 				return number_format_i18n( $item->$column_name );
-    		default:
+			default:
 				return $item->$column_name;
   		}
 	}
