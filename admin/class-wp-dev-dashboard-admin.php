@@ -168,7 +168,13 @@ class WP_Dev_Dashboard_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles() {
+	public function enqueue_styles( $hook ) {
+
+		// Load only on ?page=mypluginname
+        if ( $hook != 'toplevel_page_wp-dev-dashboard' ) {
+                return;
+        }
+	
 
 		$suffix = SCRIPT_DEBUG ? '.css' : '.min.css';
 
@@ -182,8 +188,13 @@ class WP_Dev_Dashboard_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts() {
-
+	public function enqueue_scripts( $hook ) {
+		
+		// Load only on ?page=mypluginname
+		if( $hook != 'toplevel_page_wp-dev-dashboard' ) {
+			return;
+        }
+	
 		$suffix = SCRIPT_DEBUG ? '.js' : '.min.js';
 
 		wp_enqueue_script( $this->plugin_slug, plugin_dir_url( __FILE__ ) . 'js/wp-dev-dashboard-admin' . $suffix, array( 'jquery' ), $this->version, true );
