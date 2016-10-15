@@ -345,21 +345,6 @@ class WP_Dev_Dashboard_Admin {
 			)
 		);
 
-		add_settings_field(
-			'tab_order', // ID
-			__( 'Tab Order', 'wp-dev-dashboard' ), // Title
-			array( $this, 'render_select' ), // Callback
-			$this->plugin_slug, // Page
-			'main-settings', // Section
-			array( // Args
-				'id' => 'tab_order',
-				'options' => array(
-					'plugins_themes' => __( 'Plugins/Themes' ),
-					'themes_plugins' => __( 'Themes/Plugins' ),
-				),
-			)
-		);
-
 	}
 
 	public function output_settings_fields( $hidden = false ) {
