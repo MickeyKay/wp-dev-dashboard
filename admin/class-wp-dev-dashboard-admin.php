@@ -550,7 +550,7 @@ class WP_Dev_Dashboard_Admin {
 
 				// Remove any tickets that are resolved.
 				foreach ( $plugin_theme->tickets_data as $ticket_index => $ticket ) {
-					if ( 'unresolved' != $ticket['status'] ) {
+					if ( 'unresolved' != $ticket['status'] || true == $ticket['closed'] || true == $ticket['sticky'] )
 						unset( $plugins_themes[ $plugin_theme_index ]->tickets_data[ $ticket_index ] );
 					}
 				}
@@ -1029,7 +1029,9 @@ class WP_Dev_Dashboard_Admin {
 			$row_data['text'] = $link->innertext;
 			$row_data['time'] = $time->innertext;
 			$row_data['status'] = ( strpos( $link->innertext, '[Resolved]') === 0 ) ? 'resolved' : 'unresolved';
-
+			$row_data['sticky'] = ( strpos( $row->class, 'sticky') !== false ) ? true : false;
+			$row_data['closed'] = ( strpos( $row->class, 'status-closed') !== false ) ? true : false;
+			
 			$rows_data[] = $row_data;
 
 		}
