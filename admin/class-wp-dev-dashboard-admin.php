@@ -106,6 +106,16 @@ class WP_Dev_Dashboard_Admin {
 	);
 
 	/**
+	/**
+	 * An array of slugs that failed to retrieve data from wordpress.org.
+	 *
+	 * @since    2.0.0
+	 * @access   private
+	 * @var      WP_Developers_Homepage_Admin    $instance    The instance of this class.
+	 */
+	private $error_slugs;
+
+	/**
 	 * The instance of this class.
 	 *
 	 * @since    1.0.0
@@ -142,7 +152,8 @@ class WP_Dev_Dashboard_Admin {
 		$this->plugin_slug = $this->plugin->get( 'slug' );
 		$this->plugin_name = $this->plugin->get( 'name' );
 		$this->version = $this->plugin->get( 'version' );
-		$this->options = get_option( $this->plugin_slug );
+		$this->options = (array)get_option( $this->plugin_slug );
+		$this->error_slugs = array();
 		$this->js_data = array(
 			'fetch_messages' => array(
 				__( 'Fetching data, thanks for your patience. . .', 'wp-dev-dashboard' ),
@@ -507,6 +518,14 @@ class WP_Dev_Dashboard_Admin {
 		$force_refresh = isset( $_POST['force_refresh'] ) ? $_POST['force_refresh'] : false;
 		$current_url = isset( $_POST['current_url'] ) ? $_POST['current_url'] : false;
 
+		// Go get the data, we're doing this now so we can display any errors before the tables/metaboxes.
+		$this->get_plugins_themes( 'plugins', $force_refresh );
+		$this->get_plugins_themes( 'themes', $force_refresh );
+		
+		if ( count( $this->error_slugs ) > 0 ) {
+			printf( '<div class="error"><p>%s %s</p></div>', __( 'WP Developers Homepage Error: The following items could not be retrieved from wordpress.org;', 'wp-developers-homepage' ), implode( ', ', $this->error_slugs ) );
+		}
+		
 		// Output refresh button.
 		$this->do_refresh_button();
 
@@ -516,7 +535,7 @@ class WP_Dev_Dashboard_Admin {
         	<a href="#" class="button" data-wpdd-tab-target="info"><span class="dashicons dashicons-list-view" data-wpdd-tab-target="info"></span> <?php echo __( 'Statistics', 'wp-dev-dashboard '); ?></a>
         </div>
         <div class="wpdd-sub-tab-container">
-        	<div class="wppd-sub-tab wpdd-sub-tab-tickets active"><?php $this->do_meta_boxes( $ticket_type, $force_refresh ); ?></div>
+        	<div class="wppd-sub-tab wpdd-sub-tab-tickets active"><?php $this->do_meta_boxes( $ticket_type ); ?></div>
         	<div class="wppd-sub-tab wpdd-sub-tab-info"><?php $this->output_list_table( $ticket_type, $current_url ); ?></div>
         </div>
         <?php
@@ -552,7 +571,7 @@ class WP_Dev_Dashboard_Admin {
 
 				// Remove any tickets that are resolved.
 				foreach ( $plugin_theme->tickets_data as $ticket_index => $ticket ) {
-					if ( 'unresolved' != $ticket['status'] || true == $ticket['closed'] || true == $ticket['sticky'] )
+					if ( 'unresolved' != $ticket['status'] || true == $ticket['closed'] || true == $ticket['sticky'] ) {
 						unset( $plugins_themes[ $plugin_theme_index ]->tickets_data[ $ticket_index ] );
 					}
 				}
@@ -1004,7 +1023,8 @@ class WP_Dev_Dashboard_Admin {
 		$html = $this->get_page_html( $plugin_theme_slug, $page_num, $ticket_type );
 
 		if( is_wp_error( $html ) ) {
-			printf( __( 'WP Dev Dashboard error: %s (%s)<br />', 'wp-dev-dashboard' ), $html->get_error_message(), $plugin_theme_slug );
+			$this->error_slugs[ $plugin_theme_slug ] = $plugin_theme_slug;
+			
 			return false;
 		}
 
