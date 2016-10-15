@@ -1,4 +1,5 @@
 <?php
+use Sunra\PhpSimple\HtmlDomParser;
 
 /**
  * The dashboard-specific functionality of the plugin.
@@ -219,8 +220,9 @@ class WP_Dev_Dashboard_Admin {
 		$tab_base_url = "?page={$this->plugin_slug}";
 		$active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'plugins';
 		$show_secondary_tabs = ! empty( $this->options['username'] ) || ! empty( $this->options['plugin_slugs'] ) || ! empty( $this->options['theme_slugs'] );
-		$is_secondary_tab = ( 'plugins' == $active_tab || 'themes' == $active_tab ) && ( $show_secondary_tabs ) ;
-
+		$is_secondary_tab = ( 'plugins' == $active_tab || 'themes' == $active_tab ) && ( $show_secondary_tabs );
+		$tab_order = ( array_key_exists( 'tab_order', $this->options ) ) ? $this->options['tab_order'] : 'themes_plugins';
+		
 		// Check force refresh param passed via Ajax.
 		$force_refresh = isset( $_POST['force_refresh'] ) ? true : false;
 
@@ -230,7 +232,7 @@ class WP_Dev_Dashboard_Admin {
 	        <h1><?php echo $this->plugin_name; ?></h1><br />
 	        <h2 class="nav-tab-wrapper">
 	        	<?php if ( $show_secondary_tabs ) : ?>
-	        		<?php if ( 'themes_plugins' == $this->options['tab_order'] ) : ?>
+	        		<?php if ( 'themes_plugins' == $tab_order ) : ?>
 	        		<a href="<?php echo $tab_base_url; ?>&tab=themes" class="nav-tab <?php echo $active_tab == 'themes' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-appearance"></span> <?php echo __( 'Themes', 'wp-dev-dashboard '); ?></a>
 		        	<a href="<?php echo $tab_base_url; ?>&tab=plugins" class="nav-tab <?php echo $active_tab == 'plugins' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-plugins"></span> <?php echo __( 'Plugins', 'wp-dev-dashboard '); ?></a>
 		        	<?php else: ?>
@@ -550,7 +552,7 @@ class WP_Dev_Dashboard_Admin {
 
 				// Remove any tickets that are resolved.
 				foreach ( $plugin_theme->tickets_data as $ticket_index => $ticket ) {
-					if ( 'unresolved' != $ticket['status'] ) {
+					if ( 'unresolved' != $ticket['status'] || true == $ticket['closed'] || true == $ticket['sticky'] )
 						unset( $plugins_themes[ $plugin_theme_index ]->tickets_data[ $ticket_index ] );
 					}
 				}
@@ -1006,7 +1008,7 @@ class WP_Dev_Dashboard_Admin {
 			return false;
 		}
 
-		$html = str_get_html( $html );
+		$html = HtmlDomParser::str_get_html( $html );
 
 		$table = $html->find( 'li[class=bbp-body]', 0 );
 
@@ -1029,7 +1031,9 @@ class WP_Dev_Dashboard_Admin {
 			$row_data['text'] = $link->innertext;
 			$row_data['time'] = $time->innertext;
 			$row_data['status'] = ( strpos( $link->innertext, '[Resolved]') === 0 ) ? 'resolved' : 'unresolved';
-
+			$row_data['sticky'] = ( strpos( $row->class, 'sticky') !== false ) ? true : false;
+			$row_data['closed'] = ( strpos( $row->class, 'status-closed') !== false ) ? true : false;
+			
 			$rows_data[] = $row_data;
 
 		}
