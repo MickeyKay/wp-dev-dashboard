@@ -872,21 +872,20 @@ class WP_Dev_Dashboard_Admin {
 	public function get_tickets_html( $tickets_data ) {
 
 		$age_limit = ( empty( $this->options['age_limit'] ) ) ? 0 : (int)$this->options['age_limit'];
-
-		$ctime = time();
-
-		$age_limit_time = strtotime( "{$age_limit} days ago", $ctime );
-
+		$age_limit_time = 0;
+		
+		if ( $age_limit > 0 ) {
+			$age_limit_time = strtotime( "{$age_limit} days ago", time() );
+		}
+		
 		$html = '<ul>';
 
 		// Get output for all tickets for this plugin.
 		$i = 0;
 		foreach ( $tickets_data as $ticket_data ) {
-			if ( $age_limit > 0 ) {
-					if ( $ticket_data['timestamp'] < $age_limit_time ) {
-						continue;
-					}
-				}
+			if ( $age_limit > 0 && $ticket_data['timestamp'] < $age_limit_time ) {
+				continue;
+			}
 
 			// Generate status icons.
 			if ( 'resolved' == $ticket_data['status'] ) {
