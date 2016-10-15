@@ -350,13 +350,20 @@ class WP_Dev_Dashboard_Admin {
 
 		add_settings_field(
 			'refresh_timeout', // ID
-			__( 'Hours before refresh', 'wp-dev-dashboard' ), // Title
-			array( $this, 'render_text_input' ), // Callback
+			__( 'Refresh after', 'wp-dev-dashboard' ), // Title
+			array( $this, 'render_select' ), // Callback
 			$this->plugin_slug, // Page
 			'main-settings', // Section
 			array( // Args
 				'id' => 'refresh_timeout',
-				'description' => __( 'The number of hours before a refresh will be done.  Valid hours are between 1 and 24.  Note: This setting will not take effect until the last data load expires.', 'wp-dev-dashboard' ),
+				'description' => __( 'The number of hours before a refresh will be done.  Note: This setting will not take effect until the last data load expires.', 'wp-dev-dashboard' ),
+				'options' => array( 
+					'1' => __( 'One Hour' ),
+					'4' => __( 'Four Hours' ),
+					'8' => __( 'Eight Hours' ),
+					'12' => __( 'Twelve Hours' ),
+					'24' => __( 'Twenty Four Hours' ),
+				),
 			)
 		);
 
