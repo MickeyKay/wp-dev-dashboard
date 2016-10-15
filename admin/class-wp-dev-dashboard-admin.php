@@ -298,6 +298,18 @@ class WP_Dev_Dashboard_Admin {
 		);
 
 		add_settings_field(
+			'exclude_plugin_slugs', // ID
+			__( 'Exclude plugins', 'wp-dev-dashboard' ), // Title
+			array( $this, 'render_text_input' ), // Callback
+			$this->plugin_slug, // Page
+			'main-settings', // Section
+			array( // Args
+			'id' => 'exclude_plugin_slugs',
+			'description' => __( 'Comma-separated list of slugs to exclude.', 'wp-dev-dashboard' ),
+			)
+		);
+
+		add_settings_field(
 			'plugin_slugs', // ID
 			__( 'Additional plugins', 'wp-dev-dashboard' ), // Title
 			array( $this, 'render_text_input' ), // Callback
@@ -305,9 +317,21 @@ class WP_Dev_Dashboard_Admin {
 			'main-settings', // Section
 			array( // Args
 				'id' => 'plugin_slugs',
-				'description' => __( 'Comma-separated list of slugs for additional plugins to include.', 'wp-dev-dashboard' ),
+				'description' => __( 'Comma-separated list of slugs for additional plugins to include.  Note: Adding a slug here will override an exclusion above.', 'wp-dev-dashboard' ),
 			)
 		);
+
+		add_settings_field(
+			'exclude_theme_slugs', // ID
+			__( 'Exclude themes', 'wp-dev-dashboard' ), // Title
+			array( $this, 'render_text_input' ), // Callback
+			$this->plugin_slug, // Page
+			'main-settings', // Section
+			array( // Args
+				'id' => 'exclude_theme_slugs',
+				'description' => __( 'Comma-separated list of slugs to exclude.', 'wp-dev-dashboard' ),
+ 			)
+ 		);
 
 		add_settings_field(
 			'theme_slugs', // ID
@@ -317,7 +341,7 @@ class WP_Dev_Dashboard_Admin {
 			'main-settings', // Section
 			array( // Args
 				'id' => 'theme_slugs',
-				'description' => __( 'Comma-separated list of slugs for additional themes to include.', 'wp-dev-dashboard' ),
+				'description' => __( 'Comma-separated list of slugs for additional themes to include.  Note: Adding a slug here will override an exclusion above.', 'wp-dev-dashboard' ),
 			)
 		);
 
@@ -572,7 +596,7 @@ class WP_Dev_Dashboard_Admin {
 			return strnatcmp( strtolower( $plugin_1->name ), strtolower( $plugin_2->name ) );
 		});
 
-		// Loop through all plugins.
+		// Loop through all plugins/themes.
 		foreach ( $plugins_themes as $plugin_theme ) {
 
 			// Skip if there are no tickets.
@@ -869,16 +893,29 @@ class WP_Dev_Dashboard_Admin {
 			return array();
 		}
 
+		$exclude_slugs = array();
+
 		// Require file that includes plugin API functions.
 		if ( 'plugins' == $ticket_type ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
 			$query_function = 'plugins_api';
 			$query_action = 'query_plugins';
+
+			if ( ! empty( $this->options['exclude_plugin_slugs'] ) ) {
+				$exclude_slugs = explode( ',', $this->options['exclude_plugin_slugs'] );
+			}
 		} else {
 			require_once ABSPATH . 'wp-admin/includes/theme.php';
 			$query_function = 'themes_api';
 			$query_action = 'query_themes';
+
+			if ( ! empty( $this->options['exclude_theme_slugs'] ) ) {
+				$exclude_slugs = explode( ',', $this->options['exclude_theme_slugs'] );
+			}
 		}
+
+		// Trim all the elements in the exclusion list.
+		$exclude_slugs = array_map( 'trim', $exclude_slugs );
 
 		$args = array(
 			'author' => $this->options['username'],
@@ -891,6 +928,13 @@ class WP_Dev_Dashboard_Admin {
 
 		if ( $data && ! is_wp_error( $data ) ) {
 			$plugins_themes_by_user = ( 'plugins' == $ticket_type ) ? $data->plugins : $data->themes;
+		}
+
+		// Exclude the slugs the user has told us to.
+		foreach( $plugins_themes_by_user as $key => $value ) {
+			if ( in_array( $value->slug, $exclude_slugs ) ) {
+				unset( $plugins_themes_by_user[$key] );
+			}
 		}
 
 		return $plugins_themes_by_user;
