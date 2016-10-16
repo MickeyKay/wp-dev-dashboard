@@ -429,7 +429,7 @@ class WP_Dev_Dashboard_Admin {
 			'main-settings', // Section
 			array( // Args
 				'id' => 'age_limit',
-				'description' => __( 'Ignore tickets older than this number of days. 0 = unlimited.', 'wp-dev-dashboard' ),
+				'description' => __( 'Ignore tickets older than this number of days. 0/blank = unlimited.', 'wp-dev-dashboard' ),
 			)
 		);
 
