@@ -169,9 +169,15 @@ class WP_Dev_Dashboard_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles() {
+	public function enqueue_styles( $hook ) {
 
-		wp_enqueue_style( $this->plugin_slug, plugin_dir_url( __FILE__ ) . 'css/wp-dev-dashboard-admin.css', array(), $this->version, 'all' );
+		// Load only on ?page=mypluginname
+        if ( $hook != 'toplevel_page_wp-dev-dashboard' ) {
+                return;
+        }
+
+		$suffix = SCRIPT_DEBUG ? '.css' : '.min.css';
+		wp_enqueue_style( $this->plugin_slug, plugin_dir_url( __FILE__ ) . 'css/wp-dev-dashboard-admin' . $suffix, array(), $this->version, 'all' );
 
 	}
 
@@ -180,11 +186,19 @@ class WP_Dev_Dashboard_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts() {
+	public function enqueue_scripts( $hook ) {
 
-		wp_enqueue_script( $this->plugin_slug, plugin_dir_url( __FILE__ ) . 'js/wp-dev-dashboard-admin.js', array( 'jquery' ), $this->version, true );
+		// Load only on ?page=mypluginname
+		if ( 'toplevel_page_wp-dev-dashboard' != $hook ) {
+			return;
+        }
 
-		wp_localize_script( $this->plugin_slug, "wpddSettings", $this->js_data );
+		$suffix = SCRIPT_DEBUG ? '.js' : '.min.js';
+
+		wp_enqueue_script( $this->plugin_slug, plugin_dir_url( __FILE__ ) . 'js/wp-dev-dashboard-admin' . $suffix, array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( 'jquery-tablesorter-js', plugin_dir_url( __FILE__ ) . 'js/jquery.tablesorter' . $suffix, array( 'jquery' ), $this->version, true );
+
+		wp_localize_script( $this->plugin_slug, 'wpddSettings', $this->js_data );
 
 		// Enqueue necessary scripts for metaboxes.
 		wp_enqueue_script( 'postbox' );
@@ -300,18 +314,6 @@ class WP_Dev_Dashboard_Admin {
 		);
 
 		add_settings_field(
-			'plugin_slugs', // ID
-			__( 'Additional plugins', 'wp-dev-dashboard' ), // Title
-			array( $this, 'render_text_input' ), // Callback
-			$this->plugin_slug, // Page
-			'main-settings', // Section
-			array( // Args
-				'id' => 'plugin_slugs',
-				'description' => __( 'Comma-separated list of additional plugin slugs to include.', 'wp-dev-dashboard' ),
-			)
-		);
-
-		add_settings_field(
 			'exclude_plugin_slugs', // ID
 			__( 'Exclude plugins', 'wp-dev-dashboard' ), // Title
 			array( $this, 'render_text_input' ), // Callback
@@ -319,19 +321,19 @@ class WP_Dev_Dashboard_Admin {
 			'main-settings', // Section
 			array( // Args
 			'id' => 'exclude_plugin_slugs',
-			'description' => __( 'Comma-separated list of plugin slugs to exclude.', 'wp-dev-dashboard' ),
+			'description' => __( 'Comma-separated list of slugs to exclude.', 'wp-dev-dashboard' ),
 			)
 		);
 
 		add_settings_field(
-			'theme_slugs', // ID
-			__( 'Additional themes', 'wp-dev-dashboard' ), // Title
+			'plugin_slugs', // ID
+			__( 'Additional plugins', 'wp-dev-dashboard' ), // Title
 			array( $this, 'render_text_input' ), // Callback
 			$this->plugin_slug, // Page
 			'main-settings', // Section
 			array( // Args
-				'id' => 'theme_slugs',
-				'description' => __( 'Comma-separated list of additional theme slugs to include.', 'wp-dev-dashboard' ),
+				'id' => 'plugin_slugs',
+				'description' => __( 'Comma-separated list of slugs for additional plugins to include.  Note: Adding a slug here will override an exclusion above.', 'wp-dev-dashboard' ),
 			)
 		);
 
@@ -343,9 +345,21 @@ class WP_Dev_Dashboard_Admin {
 			'main-settings', // Section
 			array( // Args
 				'id' => 'exclude_theme_slugs',
-				'description' => __( 'Comma-separated list of theme slugs to exclude.', 'wp-dev-dashboard' ),
+				'description' => __( 'Comma-separated list of slugs to exclude.', 'wp-dev-dashboard' ),
  			)
  		);
+
+		add_settings_field(
+			'theme_slugs', // ID
+			__( 'Additional themes', 'wp-dev-dashboard' ), // Title
+			array( $this, 'render_text_input' ), // Callback
+			$this->plugin_slug, // Page
+			'main-settings', // Section
+			array( // Args
+				'id' => 'theme_slugs',
+				'description' => __( 'Comma-separated list of slugs for additional themes to include.  Note: Adding a slug here will override an exclusion above.', 'wp-dev-dashboard' ),
+			)
+		);
 
 		add_settings_field(
 			'show_all_tickets', // ID
@@ -388,7 +402,7 @@ class WP_Dev_Dashboard_Admin {
 					'4'  => __( '4 Hours', 'wp-dev-dashboard' ),
 					'8'  => __( '8 Hours', 'wp-dev-dashboard' ),
 					'12' => __( '12 Hours', 'wp-dev-dashboard' ),
-					'24' => __( '24 Hours', 'wp-dev-dashboard' ),
+					'24' => __( '24 Hours', 'wp-dev-dashboard' )
 				),
 			)
 		);
@@ -693,9 +707,7 @@ class WP_Dev_Dashboard_Admin {
 		$timeout = (int)$this->options['refresh_timeout'];
 
 		// Do some sanity checking on the timeout value.
-		if ( $timeout < 1 || $timeout > 24 ) {
-			$timeout = 1;
-		}
+		if ( $timeout < 1 || $timeout > 24 ) { $timeout = 1; }
 
 		if ( $force_refresh || false === ( $plugins_themes = get_transient( $transient_slug ) ) ) {
 
