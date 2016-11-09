@@ -120,7 +120,3 @@ li.wpdd-unresolved .dashicons,
 	opacity: 1;
 	filter: alpha(opacity=100);
 }
-
-.wdd-stats-table tfoot {
-	display: none;
-}
