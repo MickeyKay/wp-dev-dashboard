@@ -226,6 +226,8 @@ class WP_Dev_Dashboard_Admin {
 		// Check force refresh param passed via Ajax.
 		$force_refresh = isset( $_POST['force_refresh'] ) ? true : false;
 
+		if ( empty( $this->options['refresh_timeout'] ) ) { $this->options['refresh_timeout'] = 1; }
+
 		?>
 		<?php screen_icon(); ?>
         <div id="<?php echo "{$this->plugin_slug}-settings"; ?>" class="wrap">
@@ -368,6 +370,25 @@ class WP_Dev_Dashboard_Admin {
 				'options' => array(
 					'plugins_themes' => __( 'Plugins/Themes' ),
 					'themes_plugins' => __( 'Themes/Plugins' ),
+				),
+			)
+		);
+
+		add_settings_field(
+			'refresh_timeout', // ID
+			__( 'Refresh after', 'wp-dev-dashboard' ), // Title
+			array( $this, 'render_select' ), // Callback
+			$this->plugin_slug, // Page
+			'main-settings', // Section
+			array( // Args
+				'id' => 'refresh_timeout',
+				'description' => __( 'The number of hours before a refresh will be done.  Note: This setting will not take effect until the last data load expires.', 'wp-dev-dashboard' ),
+				'options' => array( 
+					'1' => __( 'One Hour' ),
+					'4' => __( 'Four Hours' ),
+					'8' => __( 'Eight Hours' ),
+					'12' => __( 'Twelve Hours' ),
+					'24' => __( 'Twenty Four Hours' ),
 				),
 			)
 		);
@@ -668,6 +689,12 @@ class WP_Dev_Dashboard_Admin {
 
 		$transient_slug = 'wpdd-' . md5( $transient_slug );
 
+		// Get the number of hours we should keep the transient for.
+		$timeout = (int)$this->options['refresh_timeout'];
+
+		// Do some sanity checking on the timeout value.
+		if ( $timeout < 1 || $timeout > 24 ) { $timeout = 1; }
+
 		if ( $force_refresh || false === ( $plugins_themes = get_transient( $transient_slug ) ) ) {
 
 			$plugins_themes = $this->get_tickets_data( $username, $ticket_type );
@@ -679,9 +706,9 @@ class WP_Dev_Dashboard_Admin {
 				 *
 				 * @since 1.0.0
 				 *
-				 * @param $expiration Expiration in seconds (default 3600 - one hour).
+				 * @param $expiration Expiration in seconds (default 3600 = one hour).
 				 */
-				$transient_expiration = apply_filters( 'wpdd_transient_expiration', HOUR_IN_SECONDS );
+				$transient_expiration = apply_filters( 'wpdd_transient_expiration', $timeout * HOUR_IN_SECONDS );
 				set_transient( $transient_slug, $plugins_themes, $transient_expiration );
 			}
 
