@@ -400,7 +400,7 @@ class WP_Dev_Dashboard_Admin {
 
 		add_settings_field(
 			'refresh_timeout', // ID
-			__( 'Refresh after', 'wp-dev-dashboard' ), // Title
+			__( 'Cache duration', 'wp-dev-dashboard' ), // Title
 			array( $this, 'render_select' ), // Callback
 			$this->plugin_slug, // Page
 			'main-settings', // Section
