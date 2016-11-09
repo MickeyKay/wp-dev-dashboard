@@ -106,6 +106,16 @@ class WP_Dev_Dashboard_Admin {
 	);
 
 	/**
+	/**
+	 * An array of slugs that failed to retrieve data from wordpress.org.
+	 *
+	 * @since    2.0.0
+	 * @access   private
+	 * @var      WP_Developers_Homepage_Admin    $instance    The instance of this class.
+	 */
+	private $error_slugs;
+
+	/**
 	 * The instance of this class.
 	 *
 	 * @since    1.0.0
@@ -142,7 +152,8 @@ class WP_Dev_Dashboard_Admin {
 		$this->plugin_slug = $this->plugin->get( 'slug' );
 		$this->plugin_name = $this->plugin->get( 'name' );
 		$this->version = $this->plugin->get( 'version' );
-		$this->options = get_option( $this->plugin_slug );
+		$this->options = (array)get_option( $this->plugin_slug );
+		$this->error_slugs = array();
 		$this->js_data = array(
 			'fetch_messages' => array(
 				__( 'Fetching data, thanks for your patience. . .', 'wp-dev-dashboard' ),
@@ -169,9 +180,18 @@ class WP_Dev_Dashboard_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles() {
+	public function enqueue_styles( $hook ) {
 
-		wp_enqueue_style( $this->plugin_slug, plugin_dir_url( __FILE__ ) . 'css/wp-dev-dashboard-admin.css', array(), $this->version, 'all' );
+		// Load only on ?page=mypluginname
+        if ( $hook != 'toplevel_page_wp-dev-dashboard' ) {
+                return;
+        }
+	
+
+		$suffix = SCRIPT_DEBUG ? '.css' : '.min.css';
+
+		wp_enqueue_style( $this->plugin_slug, plugin_dir_url( __FILE__ ) . 'css/wp-dev-dashboard-admin' . $suffix, array(), $this->version, 'all' );
+		wp_enqueue_style( 'jquery-table-sorter-css', plugin_dir_url( __FILE__ ) . 'css/jquery-table-sorter' . $suffix, array(), $this->version, 'all' );
 
 	}
 
@@ -180,9 +200,17 @@ class WP_Dev_Dashboard_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts() {
+	public function enqueue_scripts( $hook ) {
+		
+		// Load only on ?page=mypluginname
+		if( $hook != 'toplevel_page_wp-dev-dashboard' ) {
+			return;
+        }
+	
+		$suffix = SCRIPT_DEBUG ? '.js' : '.min.js';
 
-		wp_enqueue_script( $this->plugin_slug, plugin_dir_url( __FILE__ ) . 'js/wp-dev-dashboard-admin.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_slug, plugin_dir_url( __FILE__ ) . 'js/wp-dev-dashboard-admin' . $suffix, array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( 'jquery-tablesorter-js', plugin_dir_url( __FILE__ ) . 'js/jquery.tablesorter' . $suffix, array( 'jquery' ), $this->version, true );
 
 		wp_localize_script( $this->plugin_slug, "wpddSettings", $this->js_data );
 
@@ -225,6 +253,8 @@ class WP_Dev_Dashboard_Admin {
 		
 		// Check force refresh param passed via Ajax.
 		$force_refresh = isset( $_POST['force_refresh'] ) ? true : false;
+
+		if ( empty( $this->options['refresh_timeout'] ) ) { $this->options['refresh_timeout'] = 1; }
 
 		?>
 		<?php screen_icon(); ?>
@@ -298,6 +328,18 @@ class WP_Dev_Dashboard_Admin {
 		);
 
 		add_settings_field(
+			'exclude_plugin_slugs', // ID
+			__( 'Exclude plugins', 'wp-dev-dashboard' ), // Title
+			array( $this, 'render_text_input' ), // Callback
+			$this->plugin_slug, // Page
+			'main-settings', // Section
+			array( // Args
+			'id' => 'exclude_plugin_slugs',
+			'description' => __( 'Comma-separated list of slugs to exclude.', 'wp-dev-dashboard' ),
+			)
+		);
+
+		add_settings_field(
 			'plugin_slugs', // ID
 			__( 'Additional plugins', 'wp-dev-dashboard' ), // Title
 			array( $this, 'render_text_input' ), // Callback
@@ -305,9 +347,21 @@ class WP_Dev_Dashboard_Admin {
 			'main-settings', // Section
 			array( // Args
 				'id' => 'plugin_slugs',
-				'description' => __( 'Comma-separated list of slugs for additional plugins to include.', 'wp-dev-dashboard' ),
+				'description' => __( 'Comma-separated list of slugs for additional plugins to include.  Note: Adding a slug here will override an exclusion above.', 'wp-dev-dashboard' ),
 			)
 		);
+
+		add_settings_field(
+			'exclude_theme_slugs', // ID
+			__( 'Exclude themes', 'wp-dev-dashboard' ), // Title
+			array( $this, 'render_text_input' ), // Callback
+			$this->plugin_slug, // Page
+			'main-settings', // Section
+			array( // Args
+				'id' => 'exclude_theme_slugs',
+				'description' => __( 'Comma-separated list of slugs to exclude.', 'wp-dev-dashboard' ),
+ 			)
+ 		);
 
 		add_settings_field(
 			'theme_slugs', // ID
@@ -317,7 +371,7 @@ class WP_Dev_Dashboard_Admin {
 			'main-settings', // Section
 			array( // Args
 				'id' => 'theme_slugs',
-				'description' => __( 'Comma-separated list of slugs for additional themes to include.', 'wp-dev-dashboard' ),
+				'description' => __( 'Comma-separated list of slugs for additional themes to include.  Note: Adding a slug here will override an exclusion above.', 'wp-dev-dashboard' ),
 			)
 		);
 
@@ -344,6 +398,25 @@ class WP_Dev_Dashboard_Admin {
 				'options' => array(
 					'plugins_themes' => __( 'Plugins/Themes' ),
 					'themes_plugins' => __( 'Themes/Plugins' ),
+				),
+			)
+		);
+
+		add_settings_field(
+			'refresh_timeout', // ID
+			__( 'Refresh after', 'wp-dev-dashboard' ), // Title
+			array( $this, 'render_select' ), // Callback
+			$this->plugin_slug, // Page
+			'main-settings', // Section
+			array( // Args
+				'id' => 'refresh_timeout',
+				'description' => __( 'The number of hours before a refresh will be done.  Note: This setting will not take effect until the last data load expires.', 'wp-dev-dashboard' ),
+				'options' => array( 
+					'1' => __( 'One Hour' ),
+					'4' => __( 'Four Hours' ),
+					'8' => __( 'Eight Hours' ),
+					'12' => __( 'Twelve Hours' ),
+					'24' => __( 'Twenty Four Hours' ),
 				),
 			)
 		);
@@ -507,6 +580,14 @@ class WP_Dev_Dashboard_Admin {
 		$force_refresh = isset( $_POST['force_refresh'] ) ? $_POST['force_refresh'] : false;
 		$current_url = isset( $_POST['current_url'] ) ? $_POST['current_url'] : false;
 
+		// Go get the data, we're doing this now so we can display any errors before the tables/metaboxes.
+		$this->get_plugins_themes( 'plugins', $force_refresh );
+		$this->get_plugins_themes( 'themes', $force_refresh );
+		
+		if ( count( $this->error_slugs ) > 0 ) {
+			printf( '<div class="error"><p>%s %s</p></div>', __( 'WP Developers Homepage Error: The following items could not be retrieved from wordpress.org;', 'wp-developers-homepage' ), implode( ', ', $this->error_slugs ) );
+		}
+		
 		// Output refresh button.
 		$this->do_refresh_button();
 
@@ -516,7 +597,7 @@ class WP_Dev_Dashboard_Admin {
         	<a href="#" class="button" data-wpdd-tab-target="info"><span class="dashicons dashicons-list-view" data-wpdd-tab-target="info"></span> <?php echo __( 'Statistics', 'wp-dev-dashboard '); ?></a>
         </div>
         <div class="wpdd-sub-tab-container">
-        	<div class="wppd-sub-tab wpdd-sub-tab-tickets active"><?php $this->do_meta_boxes( $ticket_type, $force_refresh ); ?></div>
+        	<div class="wppd-sub-tab wpdd-sub-tab-tickets active"><?php $this->do_meta_boxes( $ticket_type ); ?></div>
         	<div class="wppd-sub-tab wpdd-sub-tab-info"><?php $this->output_list_table( $ticket_type, $current_url ); ?></div>
         </div>
         <?php
@@ -552,7 +633,7 @@ class WP_Dev_Dashboard_Admin {
 
 				// Remove any tickets that are resolved.
 				foreach ( $plugin_theme->tickets_data as $ticket_index => $ticket ) {
-					if ( 'unresolved' != $ticket['status'] || true == $ticket['closed'] || true == $ticket['sticky'] )
+					if ( 'unresolved' != $ticket['status'] || true == $ticket['closed'] || true == $ticket['sticky'] ) {
 						unset( $plugins_themes[ $plugin_theme_index ]->tickets_data[ $ticket_index ] );
 					}
 				}
@@ -572,7 +653,7 @@ class WP_Dev_Dashboard_Admin {
 			return strnatcmp( strtolower( $plugin_1->name ), strtolower( $plugin_2->name ) );
 		});
 
-		// Loop through all plugins.
+		// Loop through all plugins/themes.
 		foreach ( $plugins_themes as $plugin_theme ) {
 
 			// Skip if there are no tickets.
@@ -644,6 +725,12 @@ class WP_Dev_Dashboard_Admin {
 
 		$transient_slug = 'wpdd-' . md5( $transient_slug );
 
+		// Get the number of hours we should keep the transient for.
+		$timeout = (int)$this->options['refresh_timeout'];
+
+		// Do some sanity checking on the timeout value.
+		if ( $timeout < 1 || $timeout > 24 ) { $timeout = 1; }
+
 		if ( $force_refresh || false === ( $plugins_themes = get_transient( $transient_slug ) ) ) {
 
 			$plugins_themes = $this->get_tickets_data( $username, $ticket_type );
@@ -655,9 +742,9 @@ class WP_Dev_Dashboard_Admin {
 				 *
 				 * @since 1.0.0
 				 *
-				 * @param $expiration Expiration in seconds (default 3600 - one hour).
+				 * @param $expiration Expiration in seconds (default 3600 = one hour).
 				 */
-				$transient_expiration = apply_filters( 'wpdd_transient_expiration', HOUR_IN_SECONDS );
+				$transient_expiration = apply_filters( 'wpdd_transient_expiration', $timeout * HOUR_IN_SECONDS );
 				set_transient( $transient_slug, $plugins_themes, $transient_expiration );
 			}
 
@@ -869,16 +956,29 @@ class WP_Dev_Dashboard_Admin {
 			return array();
 		}
 
+		$exclude_slugs = array();
+
 		// Require file that includes plugin API functions.
 		if ( 'plugins' == $ticket_type ) {
 			require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
 			$query_function = 'plugins_api';
 			$query_action = 'query_plugins';
+
+			if ( ! empty( $this->options['exclude_plugin_slugs'] ) ) {
+				$exclude_slugs = explode( ',', $this->options['exclude_plugin_slugs'] );
+			}
 		} else {
 			require_once ABSPATH . 'wp-admin/includes/theme.php';
 			$query_function = 'themes_api';
 			$query_action = 'query_themes';
+
+			if ( ! empty( $this->options['exclude_theme_slugs'] ) ) {
+				$exclude_slugs = explode( ',', $this->options['exclude_theme_slugs'] );
+			}
 		}
+
+		// Trim all the elements in the exclusion list.
+		$exclude_slugs = array_map( 'trim', $exclude_slugs );
 
 		$args = array(
 			'author' => $this->options['username'],
@@ -891,6 +991,13 @@ class WP_Dev_Dashboard_Admin {
 
 		if ( $data && ! is_wp_error( $data ) ) {
 			$plugins_themes_by_user = ( 'plugins' == $ticket_type ) ? $data->plugins : $data->themes;
+		}
+
+		// Exclude the slugs the user has told us to.
+		foreach( $plugins_themes_by_user as $key => $value ) {
+			if ( in_array( $value->slug, $exclude_slugs ) ) {
+				unset( $plugins_themes_by_user[$key] );
+			}
 		}
 
 		return $plugins_themes_by_user;
@@ -1004,7 +1111,8 @@ class WP_Dev_Dashboard_Admin {
 		$html = $this->get_page_html( $plugin_theme_slug, $page_num, $ticket_type );
 
 		if( is_wp_error( $html ) ) {
-			printf( __( 'WP Dev Dashboard error: %s (%s)<br />', 'wp-dev-dashboard' ), $html->get_error_message(), $plugin_theme_slug );
+			$this->error_slugs[ $plugin_theme_slug ] = $plugin_theme_slug;
+			
 			return false;
 		}
 
