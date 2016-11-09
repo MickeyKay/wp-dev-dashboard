@@ -1,0 +1,34 @@
+/* header */
+.tablesorter th,
+.tablesorter thead td {
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+	padding-right: 20px !important; 
+}
+.tablesorter .header,
+.tablesorter .tablesorter-header {
+    background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
+	background-position: center right;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	white-space: normal;
+}
+.tablesorter thead .headerSortUp,
+.tablesorter thead .tablesorter-headerSortUp,
+.tablesorter thead .tablesorter-headerAsc {
+	background-image: url(data:image/gif;base64,R0lGODlhFQAEAPAAAP///wAAACH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
+	background-color: rgb(33, 117, 155);
+	color: white;
+}
+.tablesorter thead .headerSortDown,
+.tablesorter thead .tablesorter-headerSortDown,
+.tablesorter thead .tablesorter-headerDesc {
+	background-image: url(data:image/gif;base64,R0lGODlhFQAEAPAAAP///wAAACH5BAEAAAEALAAAAAAVAAQAAAINjG+gC+jP2ptn0ZtuAQA7);
+	background-color: rgb(33, 117, 155);
+	color: white;
+}
+.tablesorter thead .sorter-false {
+	background-image: none;
+	cursor: default;
+}
