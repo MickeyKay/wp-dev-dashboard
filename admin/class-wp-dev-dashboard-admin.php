@@ -106,12 +106,11 @@ class WP_Dev_Dashboard_Admin {
 	);
 
 	/**
-	/**
 	 * An array of slugs that failed to retrieve data from wordpress.org.
 	 *
 	 * @since    2.0.0
 	 * @access   private
-	 * @var      WP_Developers_Homepage_Admin    $instance    The instance of this class.
+	 * @var      array    $error_slugs    Slugs of plugins/themes with errors.
 	 */
 	private $error_slugs;
 
