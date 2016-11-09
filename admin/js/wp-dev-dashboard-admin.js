@@ -134,7 +134,7 @@
 			}
 
 			$( '.wdd-stats-table' ).tablesorter({
-				
+
 				// Sort on the date column, order DESC.
 				sortList: lastStatsOrder,
 
@@ -142,7 +142,8 @@
 				sortInitialOrder: 'desc',
 
 				// Always force string to bottom.
-				stringTo: 'min',
+				stringTo: 'min'
+
 			});
 
 			// Trigger event after refresh.
