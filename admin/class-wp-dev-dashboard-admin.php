@@ -169,9 +169,18 @@ class WP_Dev_Dashboard_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles() {
+	public function enqueue_styles( $hook ) {
 
-		wp_enqueue_style( $this->plugin_slug, plugin_dir_url( __FILE__ ) . 'css/wp-dev-dashboard-admin.css', array(), $this->version, 'all' );
+		// Load only on ?page=mypluginname
+        if ( $hook != 'toplevel_page_wp-dev-dashboard' ) {
+                return;
+        }
+	
+
+		$suffix = SCRIPT_DEBUG ? '.css' : '.min.css';
+
+		wp_enqueue_style( $this->plugin_slug, plugin_dir_url( __FILE__ ) . 'css/wp-dev-dashboard-admin' . $suffix, array(), $this->version, 'all' );
+		wp_enqueue_style( 'jquery-table-sorter-css', plugin_dir_url( __FILE__ ) . 'css/jquery-table-sorter' . $suffix, array(), $this->version, 'all' );
 
 	}
 
@@ -180,9 +189,17 @@ class WP_Dev_Dashboard_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts() {
+	public function enqueue_scripts( $hook ) {
+		
+		// Load only on ?page=mypluginname
+		if( $hook != 'toplevel_page_wp-dev-dashboard' ) {
+			return;
+        }
+	
+		$suffix = SCRIPT_DEBUG ? '.js' : '.min.js';
 
-		wp_enqueue_script( $this->plugin_slug, plugin_dir_url( __FILE__ ) . 'js/wp-dev-dashboard-admin.js', array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( $this->plugin_slug, plugin_dir_url( __FILE__ ) . 'js/wp-dev-dashboard-admin' . $suffix, array( 'jquery' ), $this->version, true );
+		wp_enqueue_script( 'jquery-tablesorter-js', plugin_dir_url( __FILE__ ) . 'js/jquery.tablesorter' . $suffix, array( 'jquery' ), $this->version, true );
 
 		wp_localize_script( $this->plugin_slug, "wpddSettings", $this->js_data );
 
