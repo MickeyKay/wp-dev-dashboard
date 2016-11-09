@@ -231,18 +231,54 @@ class WP_Dev_Dashboard_Admin {
 			esc_html__( 'Dev Dashboard', 'wp-dev-dashboard' ), // Menu title
 			'manage_options', // Capability
 			$this->plugin_slug, // Page ID
-			array( $this, 'do_settings_page' ), // Callback
+			array( $this, 'do_admin_page' ), // Callback
 			'dashicons-hammer' // Icon
 		);
 
+		add_options_page(
+			$this->plugin_name, // Page title
+			esc_html__( 'Dev Dashboard', 'wp-dev-dashboard' ), // Menu title
+			'manage_options', // Capability
+			$this->plugin_slug . '-admin', // Page ID
+			array( $this, 'do_settings_page' ) // Callback
+		);
 	}
 
 	/**
-	 * Output contents of settings page.
+	 * Output contents of the settings page.
 	 *
 	 * @since 1.0.0
 	 */
 	function do_settings_page() {
+
+		if ( empty( $this->options['refresh_timeout'] ) ) { $this->options['refresh_timeout'] = 1; }
+		if ( empty( $this->options['age_limit'] ) ) { $this->options['age_limit'] = 0; }
+		?>
+		<?php screen_icon(); ?>
+        <div id="<?php echo "{$this->plugin_slug}-settings"; ?>" class="wrap">
+	        <h1><?php echo $this->plugin_name; ?></h1><br />
+			<div id="poststuff">
+				<form action="options.php" method="post">
+					<?php
+
+					// Set up settings fields.
+					settings_fields( $this->plugin_slug );
+
+					$this->output_settings_fields();
+					submit_button( '', 'primary', '', false );
+					?>
+				</form>
+			</div><!-- #poststuff -->
+		</div><!-- .wrap -->
+		<?php
+	}
+
+	/**
+	 * Output contents of the admin page.
+	 *
+	 * @since 1.4.0
+	 */
+	function do_admin_page() {
 
 		// Set up tab/settings.
 		$tab_base_url = "?page={$this->plugin_slug}";
@@ -270,25 +306,12 @@ class WP_Dev_Dashboard_Admin {
 		        	<a href="<?php echo $tab_base_url; ?>&tab=themes" class="nav-tab <?php echo $active_tab == 'themes' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-appearance"></span> <?php echo __( 'Themes', 'wp-dev-dashboard '); ?></a>
 		        	<?php endif; ?>
 	        	<?php endif; ?>
-	        	<a href="<?php echo $tab_base_url; ?>&tab=settings" class="nav-tab <?php echo $active_tab == 'settings' ? 'nav-tab-active' : ''; ?>"><span class="dashicons dashicons-admin-generic"></span> <?php echo __( 'Settings', 'wp-dev-dashboard '); ?></a>
 	        </h2>
 			<div id="poststuff" data-wpdd-tab="<?php echo $active_tab; ?>">
 				<form action='options.php' method='post'>
 					<?php
-
-					// Set up settings fields.
-					settings_fields( $this->plugin_slug );
-
-					if ( $is_secondary_tab ) {
-
 						// Do main metabox/table output.
 						$this->do_ajax_container( 'tickets', $active_tab );
-
-					} else {
-						$this->output_settings_fields();
-						submit_button( '', 'primary', '', false );
-					}
-
 					?>
 				</form>
 			</div><!-- #poststuff -->
