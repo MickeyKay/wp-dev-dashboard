@@ -421,6 +421,18 @@ class WP_Dev_Dashboard_Admin {
 			)
 		);
 
+		add_settings_field(
+			'age_limit', // ID
+			__( 'Age limit', 'wp-dev-dashboard' ), // Title
+			array( $this, 'render_text_input' ), // Callback
+			$this->plugin_slug, // Page
+			'main-settings', // Section
+			array( // Args
+				'id' => 'age_limit',
+				'description' => __( 'Ignore tickets older than this number of days. 0/blank = unlimited.', 'wp-dev-dashboard' ),
+			)
+		);
+
 	}
 
 	public function output_settings_fields( $hidden = false ) {
@@ -859,11 +871,21 @@ class WP_Dev_Dashboard_Admin {
 	 */
 	public function get_tickets_html( $tickets_data ) {
 
+		$age_limit = ( empty( $this->options['age_limit'] ) ) ? 0 : (int)$this->options['age_limit'];
+		$age_limit_time = 0;
+		
+		if ( $age_limit > 0 ) {
+			$age_limit_time = strtotime( "{$age_limit} days ago", time() );
+		}
+		
 		$html = '<ul>';
 
 		// Get output for all tickets for this plugin.
 		$i = 0;
 		foreach ( $tickets_data as $ticket_data ) {
+			if ( $age_limit > 0 && $ticket_data['timestamp'] < $age_limit_time ) {
+				continue;
+			}
 
 			// Generate status icons.
 			if ( 'resolved' == $ticket_data['status'] ) {
@@ -1138,6 +1160,7 @@ class WP_Dev_Dashboard_Admin {
 			$row_data['href'] = $link->href;
 			$row_data['text'] = $link->innertext;
 			$row_data['time'] = $time->innertext;
+			$row_data['timestamp'] = strtotime( $row_data['time'] );
 			$row_data['status'] = ( strpos( $link->innertext, '[Resolved]') === 0 ) ? 'resolved' : 'unresolved';
 			$row_data['sticky'] = ( strpos( $row->class, 'sticky') !== false ) ? true : false;
 			$row_data['closed'] = ( strpos( $row->class, 'status-closed') !== false ) ? true : false;
