@@ -175,12 +175,9 @@ class WP_Dev_Dashboard_Admin {
         if ( $hook != 'toplevel_page_wp-dev-dashboard' ) {
                 return;
         }
-	
 
 		$suffix = SCRIPT_DEBUG ? '.css' : '.min.css';
-
 		wp_enqueue_style( $this->plugin_slug, plugin_dir_url( __FILE__ ) . 'css/wp-dev-dashboard-admin' . $suffix, array(), $this->version, 'all' );
-		wp_enqueue_style( 'jquery-table-sorter-css', plugin_dir_url( __FILE__ ) . 'css/jquery-table-sorter' . $suffix, array(), $this->version, 'all' );
 
 	}
 
@@ -190,18 +187,18 @@ class WP_Dev_Dashboard_Admin {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts( $hook ) {
-		
+
 		// Load only on ?page=mypluginname
-		if( $hook != 'toplevel_page_wp-dev-dashboard' ) {
+		if ( 'toplevel_page_wp-dev-dashboard' != $hook ) {
 			return;
         }
-	
+
 		$suffix = SCRIPT_DEBUG ? '.js' : '.min.js';
 
 		wp_enqueue_script( $this->plugin_slug, plugin_dir_url( __FILE__ ) . 'js/wp-dev-dashboard-admin' . $suffix, array( 'jquery' ), $this->version, true );
 		wp_enqueue_script( 'jquery-tablesorter-js', plugin_dir_url( __FILE__ ) . 'js/jquery.tablesorter' . $suffix, array( 'jquery' ), $this->version, true );
 
-		wp_localize_script( $this->plugin_slug, "wpddSettings", $this->js_data );
+		wp_localize_script( $this->plugin_slug, 'wpddSettings', $this->js_data );
 
 		// Enqueue necessary scripts for metaboxes.
 		wp_enqueue_script( 'postbox' );
@@ -239,7 +236,7 @@ class WP_Dev_Dashboard_Admin {
 		$show_secondary_tabs = ! empty( $this->options['username'] ) || ! empty( $this->options['plugin_slugs'] ) || ! empty( $this->options['theme_slugs'] );
 		$is_secondary_tab = ( 'plugins' == $active_tab || 'themes' == $active_tab ) && ( $show_secondary_tabs );
 		$tab_order = ( array_key_exists( 'tab_order', $this->options ) ) ? $this->options['tab_order'] : 'themes_plugins';
-		
+
 		// Check force refresh param passed via Ajax.
 		$force_refresh = isset( $_POST['force_refresh'] ) ? true : false;
 
@@ -400,7 +397,7 @@ class WP_Dev_Dashboard_Admin {
 			array( // Args
 				'id' => 'refresh_timeout',
 				'description' => __( 'The number of hours before a refresh will be done.  Note: This setting will not take effect until the last data load expires.', 'wp-dev-dashboard' ),
-				'options' => array( 
+				'options' => array(
 					'1' => __( 'One Hour' ),
 					'4' => __( 'Four Hours' ),
 					'8' => __( 'Eight Hours' ),
@@ -1121,7 +1118,7 @@ class WP_Dev_Dashboard_Admin {
 			$row_data['status'] = ( strpos( $link->innertext, '[Resolved]') === 0 ) ? 'resolved' : 'unresolved';
 			$row_data['sticky'] = ( strpos( $row->class, 'sticky') !== false ) ? true : false;
 			$row_data['closed'] = ( strpos( $row->class, 'status-closed') !== false ) ? true : false;
-			
+
 			$rows_data[] = $row_data;
 
 		}

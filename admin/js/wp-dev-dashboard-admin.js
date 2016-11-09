@@ -134,11 +134,15 @@
 			}
 
 			$( '.wdd-stats-table' ).tablesorter({
+				
 				// Sort on the date column, order DESC.
 				sortList: lastStatsOrder,
 
+				// Sort desc initially.
+				sortInitialOrder: 'desc',
+
 				// Always force string to bottom.
-				stringTo: "bottom",
+				stringTo: 'min',
 			});
 
 			// Trigger event after refresh.
