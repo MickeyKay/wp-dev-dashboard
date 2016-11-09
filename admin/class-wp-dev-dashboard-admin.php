@@ -222,7 +222,7 @@ class WP_Dev_Dashboard_Admin {
 		$show_secondary_tabs = ! empty( $this->options['username'] ) || ! empty( $this->options['plugin_slugs'] ) || ! empty( $this->options['theme_slugs'] );
 		$is_secondary_tab = ( 'plugins' == $active_tab || 'themes' == $active_tab ) && ( $show_secondary_tabs );
 		$tab_order = ( array_key_exists( 'tab_order', $this->options ) ) ? $this->options['tab_order'] : 'themes_plugins';
-		
+
 		// Check force refresh param passed via Ajax.
 		$force_refresh = isset( $_POST['force_refresh'] ) ? true : false;
 
@@ -300,18 +300,6 @@ class WP_Dev_Dashboard_Admin {
 		);
 
 		add_settings_field(
-			'exclude_plugin_slugs', // ID
-			__( 'Exclude plugins', 'wp-dev-dashboard' ), // Title
-			array( $this, 'render_text_input' ), // Callback
-			$this->plugin_slug, // Page
-			'main-settings', // Section
-			array( // Args
-			'id' => 'exclude_plugin_slugs',
-			'description' => __( 'Comma-separated list of slugs to exclude.', 'wp-dev-dashboard' ),
-			)
-		);
-
-		add_settings_field(
 			'plugin_slugs', // ID
 			__( 'Additional plugins', 'wp-dev-dashboard' ), // Title
 			array( $this, 'render_text_input' ), // Callback
@@ -319,7 +307,31 @@ class WP_Dev_Dashboard_Admin {
 			'main-settings', // Section
 			array( // Args
 				'id' => 'plugin_slugs',
-				'description' => __( 'Comma-separated list of slugs for additional plugins to include.  Note: Adding a slug here will override an exclusion above.', 'wp-dev-dashboard' ),
+				'description' => __( 'Comma-separated list of additional plugin slugs to include.', 'wp-dev-dashboard' ),
+			)
+		);
+
+		add_settings_field(
+			'exclude_plugin_slugs', // ID
+			__( 'Exclude plugins', 'wp-dev-dashboard' ), // Title
+			array( $this, 'render_text_input' ), // Callback
+			$this->plugin_slug, // Page
+			'main-settings', // Section
+			array( // Args
+			'id' => 'exclude_plugin_slugs',
+			'description' => __( 'Comma-separated list of plugin slugs to exclude.', 'wp-dev-dashboard' ),
+			)
+		);
+
+		add_settings_field(
+			'theme_slugs', // ID
+			__( 'Additional themes', 'wp-dev-dashboard' ), // Title
+			array( $this, 'render_text_input' ), // Callback
+			$this->plugin_slug, // Page
+			'main-settings', // Section
+			array( // Args
+				'id' => 'theme_slugs',
+				'description' => __( 'Comma-separated list of additional theme slugs to include.', 'wp-dev-dashboard' ),
 			)
 		);
 
@@ -331,21 +343,9 @@ class WP_Dev_Dashboard_Admin {
 			'main-settings', // Section
 			array( // Args
 				'id' => 'exclude_theme_slugs',
-				'description' => __( 'Comma-separated list of slugs to exclude.', 'wp-dev-dashboard' ),
+				'description' => __( 'Comma-separated list of theme slugs to exclude.', 'wp-dev-dashboard' ),
  			)
  		);
-
-		add_settings_field(
-			'theme_slugs', // ID
-			__( 'Additional themes', 'wp-dev-dashboard' ), // Title
-			array( $this, 'render_text_input' ), // Callback
-			$this->plugin_slug, // Page
-			'main-settings', // Section
-			array( // Args
-				'id' => 'theme_slugs',
-				'description' => __( 'Comma-separated list of slugs for additional themes to include.  Note: Adding a slug here will override an exclusion above.', 'wp-dev-dashboard' ),
-			)
-		);
 
 		add_settings_field(
 			'show_all_tickets', // ID
@@ -383,12 +383,12 @@ class WP_Dev_Dashboard_Admin {
 			array( // Args
 				'id' => 'refresh_timeout',
 				'description' => __( 'The number of hours before a refresh will be done.  Note: This setting will not take effect until the last data load expires.', 'wp-dev-dashboard' ),
-				'options' => array( 
-					'1' => __( 'One Hour' ),
-					'4' => __( 'Four Hours' ),
-					'8' => __( 'Eight Hours' ),
-					'12' => __( 'Twelve Hours' ),
-					'24' => __( 'Twenty Four Hours' ),
+				'options' => array(
+					'1'  => __( '1 Hour', 'wp-dev-dashboard' ),
+					'4'  => __( '4 Hours', 'wp-dev-dashboard' ),
+					'8'  => __( '8 Hours', 'wp-dev-dashboard' ),
+					'12' => __( '12 Hours', 'wp-dev-dashboard' ),
+					'24' => __( '24 Hours', 'wp-dev-dashboard' ),
 				),
 			)
 		);
@@ -693,7 +693,9 @@ class WP_Dev_Dashboard_Admin {
 		$timeout = (int)$this->options['refresh_timeout'];
 
 		// Do some sanity checking on the timeout value.
-		if ( $timeout < 1 || $timeout > 24 ) { $timeout = 1; }
+		if ( $timeout < 1 || $timeout > 24 ) {
+			$timeout = 1;
+		}
 
 		if ( $force_refresh || false === ( $plugins_themes = get_transient( $transient_slug ) ) ) {
 
@@ -1104,7 +1106,7 @@ class WP_Dev_Dashboard_Admin {
 			$row_data['status'] = ( strpos( $link->innertext, '[Resolved]') === 0 ) ? 'resolved' : 'unresolved';
 			$row_data['sticky'] = ( strpos( $row->class, 'sticky') !== false ) ? true : false;
 			$row_data['closed'] = ( strpos( $row->class, 'status-closed') !== false ) ? true : false;
-			
+
 			$rows_data[] = $row_data;
 
 		}
